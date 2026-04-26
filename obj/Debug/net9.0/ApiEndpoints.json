@@ -17,6 +17,22 @@
   },
   {
     "ContainingType": "Pathify.Controllers.AccountController",
+    "Method": "ApproveUser",
+    "RelativePath": "api/Account/approve-user/{email}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AccountController",
     "Method": "AssignRole",
     "RelativePath": "api/Account/assign-role",
     "HttpMethod": "POST",
@@ -74,6 +90,32 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "ApproveUser",
+    "RelativePath": "api/Admin/approve/{userId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "GetPendingUsers",
+    "RelativePath": "api/Admin/pending",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Pathify.Controllers.ProfessorController",
     "Method": "Get",
     "RelativePath": "api/Professor",
@@ -81,6 +123,38 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.StudentDashboardController",
+    "Method": "GetCompletedCredits",
+    "RelativePath": "api/StudentDashboard/completed-credits/{ssn}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ssn",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.StudentDashboardController",
+    "Method": "GetPassedCoursesCount",
+    "RelativePath": "api/StudentDashboard/enrolled-courses/{ssn}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ssn",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

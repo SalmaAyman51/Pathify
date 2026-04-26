@@ -5,7 +5,7 @@ namespace Pathify.Models;
 
 public partial class Course
 {
-    public int CourseId { get; set; }
+    public string CourseId { get; set; } = null!;
 
     public string CourseName { get; set; } = null!;
 
@@ -17,7 +17,9 @@ public partial class Course
 
     public int CourseLevel { get; set; }
 
-    public int? PreReqCourseId { get; set; }
+    public string? PreReqCourseId { get; set; }
+
+    public int CreditHours { get; set; }
 
     public virtual Adminstration AdminSsnNavigation { get; set; } = null!;
 
@@ -28,4 +30,6 @@ public partial class Course
     public virtual ICollection<Course> InversePreReqCourse { get; set; } = new List<Course>();
 
     public virtual Course? PreReqCourse { get; set; }
+
+    public virtual ICollection<Student> StudentSsns { get; set; } = new List<Student>();
 }

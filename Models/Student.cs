@@ -7,7 +7,7 @@ public partial class Student
 {
     public string StudentSsn { get; set; } = null!;
 
-    public int StudentId { get; set; }
+    public int? StudentId { get; set; }
 
     public string Fname { get; set; } = null!;
 
@@ -29,13 +29,17 @@ public partial class Student
 
     public int? LevelId { get; set; }
 
-    public int TeamId { get; set; }
+    public int? TeamId { get; set; }
 
     public int? ProjectId { get; set; }
+
+    public bool IsApproved { get; set; }
 
     public virtual ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
 
     public virtual Project? Project { get; set; }
 
     public virtual ICollection<StudentPhone> StudentPhones { get; set; } = new List<StudentPhone>();
+
+    public virtual ICollection<Course> Courses { get; set; } = new List<Course>();
 }

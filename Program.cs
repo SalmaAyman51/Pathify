@@ -1,10 +1,13 @@
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Build.Construction;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Pathify.Data;
 using System.Text;
+using Pathify.Models;
+using Pathify.Controllers;
 
 namespace Pathify
 {
@@ -19,9 +22,9 @@ namespace Pathify
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
            // builder.Services.AddOpenApi();
-            builder.Services.AddDbContext<AppDbContext>(option =>
+            builder.Services.AddDbContext<PathifyContext>(option =>
             option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.Password.RequiredLength = 8;
                 options.Password.RequireNonAlphanumeric = false;
@@ -30,7 +33,7 @@ namespace Pathify
                 options.Password.RequireUppercase = false;
 
             })
-                .AddEntityFrameworkStores<AppDbContext>()
+                .AddEntityFrameworkStores<PathifyContext>()
                 .AddDefaultTokenProviders();
             builder.Services.AddAuthentication(options =>
             {
@@ -67,13 +70,14 @@ namespace Pathify
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-           /* if (app.Environment.IsDevelopment())
+           if (app.Environment.IsDevelopment())
             {
-                app.MapOpenApi();
-            }
-        */
+               // app.MapOpenApi();
                 app.UseSwagger();
                 app.UseSwaggerUI();
+            }
+        
+               
             
 
             app.UseHttpsRedirection();

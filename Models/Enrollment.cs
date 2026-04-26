@@ -5,7 +5,7 @@ namespace Pathify.Models;
 
 public partial class Enrollment
 {
-    public int CourseId { get; set; }
+    public string CourseId { get; set; } = null!;
 
     public string StudentSsn { get; set; } = null!;
 

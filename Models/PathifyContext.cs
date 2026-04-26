@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Pathify.Controllers;
+using Pathify.Data;
 
 namespace Pathify.Models;
 
-public partial class PathifyContext : DbContext
+public partial class PathifyContext : IdentityDbContext<ApplicationUser>
 {
     public PathifyContext()
     {
@@ -18,6 +21,18 @@ public partial class PathifyContext : DbContext
     public virtual DbSet<AdminPhone> AdminPhones { get; set; }
 
     public virtual DbSet<Adminstration> Adminstrations { get; set; }
+
+    //public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
+
+    //public virtual DbSet<AspNetRoleClaim> AspNetRoleClaims { get; set; }
+
+    //public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
+
+    //public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
+
+    //public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
+
+    //public virtual DbSet<AspNetUserToken> AspNetUserTokens { get; set; }
 
     public virtual DbSet<Course> Courses { get; set; }
 
@@ -40,6 +55,7 @@ public partial class PathifyContext : DbContext
     public virtual DbSet<StudentPhone> StudentPhones { get; set; }
 
     public virtual DbSet<Supervisor> Supervisors { get; set; }
+    
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -49,6 +65,7 @@ public partial class PathifyContext : DbContext
     {
         modelBuilder.Entity<AdminPhone>(entity =>
         {
+            base.OnModelCreating(modelBuilder);
             entity.HasKey(e => new { e.AdminSsn, e.PhoneNumber }).HasName("PK__Admin_ph__BF0595A377126546");
 
             entity.ToTable("Admin_phone");
@@ -100,12 +117,78 @@ public partial class PathifyContext : DbContext
                 .HasConstraintName("FK_Adminstration_Adminstration");
         });
 
+        //modelBuilder.Entity<AspNetRole>(entity =>
+        //{
+        //    entity.HasIndex(e => e.NormalizedName, "RoleNameIndex")
+        //        .IsUnique()
+        //        .HasFilter("([NormalizedName] IS NOT NULL)");
+
+        //    entity.Property(e => e.Name).HasMaxLength(256);
+        //    entity.Property(e => e.NormalizedName).HasMaxLength(256);
+        //});
+
+        //modelBuilder.Entity<AspNetRoleClaim>(entity =>
+        //{
+        //    entity.HasIndex(e => e.RoleId, "IX_AspNetRoleClaims_RoleId");
+
+        //    entity.HasOne(d => d.Role).WithMany(p => p.AspNetRoleClaims).HasForeignKey(d => d.RoleId);
+        //});
+
+        //modelBuilder.Entity<AspNetUser>(entity =>
+        //{
+        //    entity.HasIndex(e => e.NormalizedEmail, "EmailIndex");
+
+        //    entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex")
+        //        .IsUnique()
+        //        .HasFilter("([NormalizedUserName] IS NOT NULL)");
+
+        //    entity.Property(e => e.Email).HasMaxLength(256);
+        //    entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
+        //    entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
+        //    entity.Property(e => e.UserName).HasMaxLength(256);
+
+        //    entity.HasMany(d => d.Roles).WithMany(p => p.Users)
+        //        .UsingEntity<Dictionary<string, object>>(
+        //            "AspNetUserRole",
+        //            r => r.HasOne<AspNetRole>().WithMany().HasForeignKey("RoleId"),
+        //            l => l.HasOne<AspNetUser>().WithMany().HasForeignKey("UserId"),
+        //            j =>
+        //            {
+        //                j.HasKey("UserId", "RoleId");
+        //                j.ToTable("AspNetUserRoles");
+        //                j.HasIndex(new[] { "RoleId" }, "IX_AspNetUserRoles_RoleId");
+        //            });
+        //});
+
+        //modelBuilder.Entity<AspNetUserClaim>(entity =>
+        //{
+        //    entity.HasIndex(e => e.UserId, "IX_AspNetUserClaims_UserId");
+
+        //    entity.HasOne(d => d.User).WithMany(p => p.AspNetUserClaims).HasForeignKey(d => d.UserId);
+        //});
+
+        //modelBuilder.Entity<AspNetUserLogin>(entity =>
+        //{
+        //    entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
+
+        //    entity.HasIndex(e => e.UserId, "IX_AspNetUserLogins_UserId");
+
+        //    entity.HasOne(d => d.User).WithMany(p => p.AspNetUserLogins).HasForeignKey(d => d.UserId);
+        //});
+
+        //modelBuilder.Entity<AspNetUserToken>(entity =>
+        //{
+        //    entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
+
+        //    entity.HasOne(d => d.User).WithMany(p => p.AspNetUserTokens).HasForeignKey(d => d.UserId);
+        //});
+
         modelBuilder.Entity<Course>(entity =>
         {
             entity.HasKey(e => e.CourseId).HasName("PK__Courses__37E005DBC529ABC7");
 
             entity.Property(e => e.CourseId)
-                .ValueGeneratedNever()
+                .HasMaxLength(50)
                 .HasColumnName("Course_Id");
             entity.Property(e => e.AdminSsn)
                 .HasMaxLength(14)
@@ -122,7 +205,9 @@ public partial class PathifyContext : DbContext
             entity.Property(e => e.DepartmentName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.PreReqCourseId).HasColumnName("PreReqCourseID");
+            entity.Property(e => e.PreReqCourseId)
+                .HasMaxLength(50)
+                .HasColumnName("PreReqCourseID");
 
             entity.HasOne(d => d.AdminSsnNavigation).WithMany(p => p.Courses)
                 .HasForeignKey(d => d.AdminSsn)
@@ -145,7 +230,9 @@ public partial class PathifyContext : DbContext
 
             entity.ToTable("Enrollment");
 
-            entity.Property(e => e.CourseId).HasColumnName("Course_Id");
+            entity.Property(e => e.CourseId)
+                .HasMaxLength(50)
+                .HasColumnName("Course_Id");
             entity.Property(e => e.StudentSsn)
                 .HasMaxLength(14)
                 .IsUnicode(false)
@@ -336,6 +423,27 @@ public partial class PathifyContext : DbContext
             entity.HasOne(d => d.Project).WithMany(p => p.Students)
                 .HasForeignKey(d => d.ProjectId)
                 .HasConstraintName("FK_Students_project");
+
+            entity.HasMany(d => d.Courses).WithMany(p => p.StudentSsns)
+                .UsingEntity<Dictionary<string, object>>(
+                    "SelectedCourse",
+                    r => r.HasOne<Course>().WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_SelectedCourses_Course"),
+                    l => l.HasOne<Student>().WithMany()
+                        .HasForeignKey("StudentSsn")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_SelectedCourses_Student"),
+                    j =>
+                    {
+                        j.HasKey("StudentSsn", "CourseId");
+                        j.ToTable("SelectedCourses");
+                        j.IndexerProperty<string>("StudentSsn")
+                            .HasMaxLength(14)
+                            .IsUnicode(false);
+                        j.IndexerProperty<string>("CourseId").HasMaxLength(50);
+                    });
         });
 
         modelBuilder.Entity<StudentPhone>(entity =>
@@ -398,4 +506,9 @@ public partial class PathifyContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+    public static implicit operator PathifyContext(AppDbContext v)
+    {
+        throw new NotImplementedException();
+    }
 }

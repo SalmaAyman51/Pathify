@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "BfJJs+WewLg=",
+  "dgSpecHash": "QKP0rJ400nA=",
   "success": true,
   "projectFilePath": "C:\\Users\\ITC\\source\\repos\\Pathify\\Pathify\\Pathify.csproj",
   "expectedPackageFiles": [
@@ -112,7 +112,7 @@
     "C:\\Users\\ITC\\.nuget\\packages\\microsoft.identitymodel.protocols.openidconnect\\8.0.1\\microsoft.identitymodel.protocols.openidconnect.8.0.1.nupkg.sha512",
     "C:\\Users\\ITC\\.nuget\\packages\\microsoft.identitymodel.tokens\\8.0.1\\microsoft.identitymodel.tokens.8.0.1.nupkg.sha512",
     "C:\\Users\\ITC\\.nuget\\packages\\microsoft.net.stringtools\\17.11.48\\microsoft.net.stringtools.17.11.48.nupkg.sha512",
-    "C:\\Users\\ITC\\.nuget\\packages\\microsoft.openapi\\3.5.2\\microsoft.openapi.3.5.2.nupkg.sha512",
+    "C:\\Users\\ITC\\.nuget\\packages\\microsoft.openapi\\2.4.1\\microsoft.openapi.2.4.1.nupkg.sha512",
     "C:\\Users\\ITC\\.nuget\\packages\\microsoft.sqlserver.server\\1.0.0\\microsoft.sqlserver.server.1.0.0.nupkg.sha512",
     "C:\\Users\\ITC\\.nuget\\packages\\microsoft.visualstudio.setup.configuration.interop\\3.2.2146\\microsoft.visualstudio.setup.configuration.interop.3.2.2146.nupkg.sha512",
     "C:\\Users\\ITC\\.nuget\\packages\\microsoft.visualstudio.web.codegeneration\\9.0.12\\microsoft.visualstudio.web.codegeneration.9.0.12.nupkg.sha512",

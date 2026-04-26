@@ -269,6 +269,7 @@ C:\Users\ITC\source\repos\Pathify\Pathify\obj\Debug\net9.0\Pathify.AssemblyInfo.
 C:\Users\ITC\source\repos\Pathify\Pathify\obj\Debug\net9.0\Pathify.csproj.CoreCompileInputs.cache
 C:\Users\ITC\source\repos\Pathify\Pathify\obj\Debug\net9.0\Pathify.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\ITC\source\repos\Pathify\Pathify\obj\Debug\net9.0\Pathify.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\ITC\source\repos\Pathify\Pathify\obj\Debug\net9.0\Pathify.sourcelink.json
 C:\Users\ITC\source\repos\Pathify\Pathify\obj\Debug\net9.0\rjimswa.dswa.cache.json
 C:\Users\ITC\source\repos\Pathify\Pathify\obj\Debug\net9.0\rjsmrazor.dswa.cache.json
 C:\Users\ITC\source\repos\Pathify\Pathify\obj\Debug\net9.0\rjsmcshtml.dswa.cache.json
