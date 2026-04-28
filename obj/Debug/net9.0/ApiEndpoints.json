@@ -49,6 +49,16 @@
   },
   {
     "ContainingType": "Pathify.Controllers.AccountController",
+    "Method": "CreateAdmin",
+    "RelativePath": "api/Account/create-admin",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AccountController",
     "Method": "Login",
     "RelativePath": "api/Account/login",
     "HttpMethod": "POST",
@@ -61,6 +71,16 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AccountController",
+    "Method": "GetMyProfile",
+    "RelativePath": "api/Account/my-profile",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -107,12 +127,65 @@
   },
   {
     "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "DeleteStudent",
+    "RelativePath": "api/Admin/delete-student/{SSN}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "SSN",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "GetStudents",
+    "RelativePath": "api/Admin/get-all-students",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "name",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
     "Method": "GetPendingUsers",
     "RelativePath": "api/Admin/pending",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "UpdateStudent",
+    "RelativePath": "api/Admin/update-student/{SSN}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "SSN",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "updatedData",
+        "Type": "Pathify.DTOs.UpdateStudentDto",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

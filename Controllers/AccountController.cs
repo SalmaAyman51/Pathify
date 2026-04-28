@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Pathify.Data;
 using Pathify.Models;
@@ -32,43 +33,68 @@ namespace Pathify.Controllers
             _context = context;
         }
 
-    
+
 
 
         // ================= REGISTER =================
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] Register model)
         {
+            // ✅ Check لو الطالب موجود بالفعل في Students
+            var existingStudent = await _context.Students
+                .FirstOrDefaultAsync(s => s.StudentSsn == model.SSN
+                                        || s.StudentId == model.StudentId
+                                        || s.Email == model.Email);
+
+            if (existingStudent != null)
+                return BadRequest("Student already exists in the system");
+
+            // ✅ Check لو موجود في TempStudentData
+            var existingTemp = await _context.TempStudentData
+                .FirstOrDefaultAsync(t => t.SSN == model.SSN
+                                        || t.StudentId == model.StudentId
+                                        || t.Email == model.Email);
+
+            if (existingTemp != null)
+                return BadRequest("Student already registered and waiting for approval");
+
             var user = new ApplicationUser
             {
-                UserName = model.Email, // 👈 login بالإيميل
+                UserName = model.Email,
                 Email = model.Email,
                 PhoneNumber = model.PhoneNumber,
-
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-
                 SSN = model.SSN,
-                Major = model.Major,
-                EnrollmentYear = model.EnrollmentYear,
-                GPA = model.GPA,
-                AcademicLevel = model.AcademicLevel,
-                BirthDate = model.BirthDate,
-
                 IsApproved = false
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
 
-            if (result.Succeeded)
+            await _userManager.AddToRoleAsync(user, model.Role);
+
+            var tempStudent = new TempStudentData
             {
-                await _userManager.AddToRoleAsync(user, model.Role);
-                return Ok("Registered, waiting for admin approval");
-            }
+                SSN = model.SSN,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                StudentId = model.StudentId,
+                Email = model.Email,
+                BirthDate = model.BirthDate,
+                Gender = model.Gender,
+                EnrollmentYear = model.EnrollmentYear,
+                GPA = model.GPA,
+                AcademicLevel = model.AcademicLevel,
+                LevelId = model.LevelId,
+                ProjectId = model.ProjectId,
+                TeamId = model.TeamId
+            };
 
-            return BadRequest(result.Errors);
+            _context.TempStudentData.Add(tempStudent);
+            await _context.SaveChangesAsync();
+
+            return Ok("Registered, waiting for admin approval");
         }
-
         // ================= LOGIN =================
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] Login model)
@@ -147,52 +173,105 @@ namespace Pathify.Controllers
             return BadRequest(result.Errors);
         }
 
+        [HttpPost("create-admin")]
+        public async Task<IActionResult> CreateAdmin()
+        {
+            if (!await _roleManager.RoleExistsAsync("Admin"))
+                await _roleManager.CreateAsync(new IdentityRole("Admin"));
+
+            if (!await _roleManager.RoleExistsAsync("Student"))
+                await _roleManager.CreateAsync(new IdentityRole("Student"));
+
+            var admin = new ApplicationUser
+            {
+                UserName = "admin@shahd.com",
+                Email = "admin@shahd.com",
+                //FirstName = "Admin",
+                //LastName = "User",
+                SSN = "00000000000000",
+                //EnrollmentYear = 0,
+                //GPA = 0,
+                //AcademicLevel = "N/A",
+                //BirthDate = DateTime.Now,
+                IsApproved = true
+            };
+
+            var result = await _userManager.CreateAsync(admin, "Admin1234@");
+
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(admin, "Admin");
+                return Ok("Admin created successfully");
+            }
+
+            return BadRequest(result.Errors);
+        }
+
         // ================= APPROVE USER =================
+       
         [Authorize(Roles = "Admin")]
         [HttpPost("approve-user/{email}")]
         public async Task<IActionResult> ApproveUser(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
+            if (user == null) return NotFound("User not found");
 
-            if (user == null)
-                return NotFound("User not found");
+
+            // ✅ جيبي بيانات الطالب من TempStudentData
+            var tempStudent = await _context.TempStudentData
+                .FirstOrDefaultAsync(t => t.SSN == user.SSN);
+            if (tempStudent == null) return NotFound("Student data not found");
 
             user.IsApproved = true;
             await _userManager.UpdateAsync(user);
 
-            // 👇 لو Student → يتحول لجدول Students
-            if (await _userManager.IsInRoleAsync(user, "Student"))
+            // ✅ انقلي البيانات لجدول Students
+            var student = new Student
             {
-                var student = new Student
-                {
-                    // ❌ بلاش دي عشان type mismatch
-                    // StudentId = user.Id,
+                StudentSsn = tempStudent.SSN,
+                StudentId = tempStudent.StudentId,
+                Fname = tempStudent.FirstName,
+                Lname = tempStudent.LastName,
+                Email = tempStudent.Email,
+                BirthDate = DateOnly.FromDateTime(tempStudent.BirthDate),
+                Gender = tempStudent.Gender ?? "N/A",
+                EnrollmentYear = tempStudent.EnrollmentYear,
+                Gpa = (decimal?)tempStudent.GPA,
+                AcademicLevel = tempStudent.AcademicLevel,
+                LevelId = tempStudent.LevelId ?? 1, // ✅ أضف السطر ده
+                TeamId = tempStudent.TeamId,        // ✅ أضف السطر ده
+                ProjectId = tempStudent.ProjectId,  // ✅ أضف السطر ده
+                IsApproved = true
+            };
+            _context.Students.Add(student);
 
-                    StudentSsn = user.SSN,
+            // ✅ امسحي البيانات المؤقتة
+            _context.TempStudentData.Remove(tempStudent);
 
-                    Fname = user.FirstName,
-                    Lname = user.LastName,
-                    FullName = user.FirstName + " " + user.LastName,
+            await _context.SaveChangesAsync();
 
-                    Email = user.Email,
-
-                    // تحويل DateTime → DateOnly
-                    BirthDate = DateOnly.FromDateTime(user.BirthDate),
-
-                    // حطي قيمة افتراضية لو مش عندك
-                    Gender = "NotSpecified",
-
-                    EnrollmentYear = user.EnrollmentYear,
-                    Gpa = (decimal?)user.GPA,
-                    AcademicLevel = user.AcademicLevel,
-
-                    IsApproved = true
-                };
-
-                _context.Students.Add(student);
-                await _context.SaveChangesAsync();
-            }
             return Ok("User approved and student created");
+        }
+        [Authorize]
+        [HttpGet("my-profile")]
+        public async Task<IActionResult> GetMyProfile()
+        {
+            var email = User.Identity.Name;
+            var user = await _userManager.FindByEmailAsync(email);
+
+            return Ok(new
+            {
+                //user.FirstName,
+                //user.LastName,
+                user.Email,
+                user.SSN,
+                //user.Gender,
+                //user.AcademicLevel,
+                //user.EnrollmentYear,
+                //user.GPA,
+                //user.BirthDate,
+                user.IsApproved
+            });
         }
     }
 }

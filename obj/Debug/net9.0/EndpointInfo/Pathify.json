@@ -129,6 +129,18 @@
         }
       }
     },
+    "/api/Account/create-admin": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Account/approve-user/{email}": {
       "post": {
         "tags": [
@@ -143,6 +155,18 @@
               "type": "string"
             }
           }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Account/my-profile": {
+      "get": {
+        "tags": [
+          "Account"
         ],
         "responses": {
           "200": {
@@ -189,6 +213,90 @@
       "get": {
         "tags": [
           "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Admin/get-all-students": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Admin/update-student/{SSN}": {
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "name": "SSN",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStudentDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStudentDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStudentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Admin/delete-student/{SSN}": {
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "name": "SSN",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -313,10 +421,6 @@
             "type": "string",
             "nullable": true
           },
-          "major": {
-            "type": "string",
-            "nullable": true
-          },
           "enrollmentYear": {
             "type": "integer",
             "format": "int32"
@@ -332,6 +436,91 @@
           "birthDate": {
             "type": "string",
             "format": "date-time"
+          },
+          "gender": {
+            "type": "string",
+            "nullable": true
+          },
+          "studentId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "levelId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "teamId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "projectId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateStudentDto": {
+        "type": "object",
+        "properties": {
+          "fname": {
+            "type": "string",
+            "nullable": true
+          },
+          "lname": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "gpa": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "academicLevel": {
+            "type": "string",
+            "nullable": true
+          },
+          "enrollmentYear": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "studentId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "birthDate": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "gender": {
+            "type": "string",
+            "nullable": true
+          },
+          "teamId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "projectId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "levelId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           }
         },
         "additionalProperties": false

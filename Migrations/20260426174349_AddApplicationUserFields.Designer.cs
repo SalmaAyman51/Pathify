@@ -12,8 +12,8 @@ using Pathify.Models;
 namespace Pathify.Migrations
 {
     [DbContext(typeof(PathifyContext))]
-    [Migration("20260426154554_AddStudentFields")]
-    partial class AddStudentFields
+    [Migration("20260426174349_AddApplicationUserFields")]
+    partial class AddApplicationUserFields
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -158,7 +158,73 @@ namespace Pathify.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Pathify.Controllers.ApplicationUser", b =>
+            modelBuilder.Entity("Pathify.Models.AdminPhone", b =>
+                {
+                    b.Property<string>("AdminSsn")
+                        .HasMaxLength(14)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(14)")
+                        .HasColumnName("AdminSSN");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(15)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(15)");
+
+                    b.HasKey("AdminSsn", "PhoneNumber")
+                        .HasName("PK__Admin_ph__BF0595A377126546");
+
+                    b.ToTable("Admin_phone", (string)null);
+                });
+
+            modelBuilder.Entity("Pathify.Models.Adminstration", b =>
+                {
+                    b.Property<string>("AdminSsn")
+                        .HasMaxLength(14)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(14)")
+                        .HasColumnName("AdminSSN");
+
+                    b.Property<string>("Fname")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("FName");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasMaxLength(101)
+                        .HasColumnType("nvarchar(101)")
+                        .HasComputedColumnSql("(([FName]+' ')+[LName])", false);
+
+                    b.Property<string>("Lname")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("LName");
+
+                    b.Property<string>("ManagerSsn")
+                        .IsRequired()
+                        .HasMaxLength(14)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(14)")
+                        .HasColumnName("managerSSN");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("AdminSsn");
+
+                    b.HasIndex("ManagerSsn");
+
+                    b.ToTable("Adminstration", (string)null);
+                });
+
+            modelBuilder.Entity("Pathify.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -253,72 +319,6 @@ namespace Pathify.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("Pathify.Models.AdminPhone", b =>
-                {
-                    b.Property<string>("AdminSsn")
-                        .HasMaxLength(14)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(14)")
-                        .HasColumnName("AdminSSN");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasMaxLength(15)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(15)");
-
-                    b.HasKey("AdminSsn", "PhoneNumber")
-                        .HasName("PK__Admin_ph__BF0595A377126546");
-
-                    b.ToTable("Admin_phone", (string)null);
-                });
-
-            modelBuilder.Entity("Pathify.Models.Adminstration", b =>
-                {
-                    b.Property<string>("AdminSsn")
-                        .HasMaxLength(14)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(14)")
-                        .HasColumnName("AdminSSN");
-
-                    b.Property<string>("Fname")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("FName");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasMaxLength(101)
-                        .HasColumnType("nvarchar(101)")
-                        .HasComputedColumnSql("(([FName]+' ')+[LName])", false);
-
-                    b.Property<string>("Lname")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("LName");
-
-                    b.Property<string>("ManagerSsn")
-                        .IsRequired()
-                        .HasMaxLength(14)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(14)")
-                        .HasColumnName("managerSSN");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
-
-                    b.HasKey("AdminSsn");
-
-                    b.HasIndex("ManagerSsn");
-
-                    b.ToTable("Adminstration", (string)null);
                 });
 
             modelBuilder.Entity("Pathify.Models.Course", b =>
@@ -745,7 +745,7 @@ namespace Pathify.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Pathify.Controllers.ApplicationUser", null)
+                    b.HasOne("Pathify.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -754,7 +754,7 @@ namespace Pathify.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Pathify.Controllers.ApplicationUser", null)
+                    b.HasOne("Pathify.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -769,7 +769,7 @@ namespace Pathify.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Pathify.Controllers.ApplicationUser", null)
+                    b.HasOne("Pathify.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -778,7 +778,7 @@ namespace Pathify.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Pathify.Controllers.ApplicationUser", null)
+                    b.HasOne("Pathify.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
