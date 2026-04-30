@@ -8,7 +8,9 @@ C:\Users\ITC\source\repos\Pathify\Pathify\bin\Debug\net9.0\Pathify.dll
 C:\Users\ITC\source\repos\Pathify\Pathify\bin\Debug\net9.0\Pathify.pdb
 C:\Users\ITC\source\repos\Pathify\Pathify\bin\Debug\net9.0\Azure.Core.dll
 C:\Users\ITC\source\repos\Pathify\Pathify\bin\Debug\net9.0\Azure.Identity.dll
+C:\Users\ITC\source\repos\Pathify\Pathify\bin\Debug\net9.0\BouncyCastle.Cryptography.dll
 C:\Users\ITC\source\repos\Pathify\Pathify\bin\Debug\net9.0\Humanizer.dll
+C:\Users\ITC\source\repos\Pathify\Pathify\bin\Debug\net9.0\MailKit.dll
 C:\Users\ITC\source\repos\Pathify\Pathify\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\ITC\source\repos\Pathify\Pathify\bin\Debug\net9.0\Microsoft.AspNetCore.Cryptography.Internal.dll
 C:\Users\ITC\source\repos\Pathify\Pathify\bin\Debug\net9.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
@@ -71,6 +73,7 @@ C:\Users\ITC\source\repos\Pathify\Pathify\bin\Debug\net9.0\Microsoft.VisualStudi
 C:\Users\ITC\source\repos\Pathify\Pathify\bin\Debug\net9.0\Microsoft.VisualStudio.Web.CodeGeneration.Templating.dll
 C:\Users\ITC\source\repos\Pathify\Pathify\bin\Debug\net9.0\Microsoft.VisualStudio.Web.CodeGeneration.Utils.dll
 C:\Users\ITC\source\repos\Pathify\Pathify\bin\Debug\net9.0\Microsoft.VisualStudio.Web.CodeGenerators.Mvc.dll
+C:\Users\ITC\source\repos\Pathify\Pathify\bin\Debug\net9.0\MimeKit.dll
 C:\Users\ITC\source\repos\Pathify\Pathify\bin\Debug\net9.0\Mono.TextTemplating.dll
 C:\Users\ITC\source\repos\Pathify\Pathify\bin\Debug\net9.0\Newtonsoft.Json.dll
 C:\Users\ITC\source\repos\Pathify\Pathify\bin\Debug\net9.0\NuGet.Common.dll

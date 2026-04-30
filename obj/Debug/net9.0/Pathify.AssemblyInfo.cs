@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Pathify")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9077f06607f9a6878bd772e4bae28ea279036907")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+98f0c0f7867e47b0f96110e45eb5b3fd445f508b")]
 [assembly: System.Reflection.AssemblyProductAttribute("Pathify")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Pathify")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

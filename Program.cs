@@ -19,7 +19,7 @@ namespace Pathify
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            //builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             // builder.Services.AddOpenApi();
             builder.Services.AddDbContext<PathifyContext>(option =>
@@ -60,7 +60,11 @@ namespace Pathify
                 options.AddPolicy("UserPolicy", policy => policy.RequireRole("User"));
                 options.AddPolicy("ProfessorPolicy", policy => policy.RequireRole("Professor"));
             });
-
+            builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    });
 
             builder.Logging.ClearProviders();
             builder.Logging.AddConsole();

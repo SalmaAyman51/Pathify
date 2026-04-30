@@ -17,6 +17,22 @@
   },
   {
     "ContainingType": "Pathify.Controllers.AccountController",
+    "Method": "DeleteProfessor",
+    "RelativePath": "api/Account/admin-delete/{ssn}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ssn",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AccountController",
     "Method": "ApproveUser",
     "RelativePath": "api/Account/approve-user/{email}",
     "HttpMethod": "POST",
@@ -59,6 +75,22 @@
   },
   {
     "ContainingType": "Pathify.Controllers.AccountController",
+    "Method": "ForgotPassword",
+    "RelativePath": "api/Account/forgot-password",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "Pathify.DTOs.ForgotPasswordDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AccountController",
     "Method": "Login",
     "RelativePath": "api/Account/login",
     "HttpMethod": "POST",
@@ -67,7 +99,7 @@
     "Parameters": [
       {
         "Name": "model",
-        "Type": "Pathify.Models.Login",
+        "Type": "Pathify.DTOs.LoginDTO",
         "IsRequired": true
       }
     ],
@@ -100,6 +132,38 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "Pathify.Controllers.AccountController",
+    "Method": "ResetPassword",
+    "RelativePath": "api/Account/reset-password",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "Pathify.DTOs.ResetPasswordDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AccountController",
+    "Method": "VerifyCode",
+    "RelativePath": "api/Account/verify-code",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "Pathify.DTOs.VerifyCodeDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Pathify.Controllers.AdminController",
     "Method": "Get",
     "RelativePath": "api/Admin",
@@ -107,6 +171,106 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "AddCourse",
+    "RelativePath": "api/Admin/add-course",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "Pathify.DTOs.CourseDTO\u002BCourseDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "AddExternalProfessor",
+    "RelativePath": "api/Admin/add-external-professor",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "Pathify.DTOs.CreateProfessorDTO\u002BCreateExternalProfessorDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "AddInternalProfessor",
+    "RelativePath": "api/Admin/add-internal-professor",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "Pathify.DTOs.CreateProfessorDTO\u002BCreateInternalProfessorDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "GetAllForAdmin",
+    "RelativePath": "api/Admin/admin-get-all",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "UpdateExternal",
+    "RelativePath": "api/Admin/admin-update-external/{ssn}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ssn",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "updatedProf",
+        "Type": "Pathify.DTOs.UpdateProfessorsDTO\u002BUpdateExternalProfessorDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "UpdateInternal",
+    "RelativePath": "api/Admin/admin-update-internal/{ssn}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ssn",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "updatedProf",
+        "Type": "Pathify.DTOs.UpdateProfessorsDTO\u002BUpdateInternalProfessorDto",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -127,6 +291,22 @@
   },
   {
     "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "DeleteCourse",
+    "RelativePath": "api/Admin/delete-course/{courseId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "courseId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
     "Method": "DeleteStudent",
     "RelativePath": "api/Admin/delete-student/{SSN}",
     "HttpMethod": "DELETE",
@@ -136,6 +316,27 @@
       {
         "Name": "SSN",
         "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "EditCourse",
+    "RelativePath": "api/Admin/edit-course/{courseId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "CourseId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "model",
+        "Type": "Pathify.DTOs.CourseDTO\u002BCourseDto",
         "IsRequired": true
       }
     ],
