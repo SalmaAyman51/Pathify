@@ -20,6 +20,7 @@ public partial class Course
     public string? PreReqCourseId { get; set; }
 
     public int CreditHours { get; set; }
+    public string CourseType { get; set; } = "Mandatory";
 
     public virtual Adminstration AdminSsnNavigation { get; set; } = null!;
 

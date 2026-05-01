@@ -124,8 +124,8 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "model",
-        "Type": "Pathify.Models.Register",
+        "Name": "dto",
+        "Type": "Pathify.DTOs.RegisterDTO\u002BRegisterDto",
         "IsRequired": true
       }
     ],
@@ -344,6 +344,16 @@
   },
   {
     "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "GetAllCourses",
+    "RelativePath": "api/Admin/get-all-courses",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
     "Method": "GetStudents",
     "RelativePath": "api/Admin/get-all-students",
     "HttpMethod": "GET",
@@ -370,6 +380,22 @@
   },
   {
     "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "UpdateAllStudentsSemester",
+    "RelativePath": "api/Admin/update-semester",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "semester",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
     "Method": "UpdateStudent",
     "RelativePath": "api/Admin/update-student/{SSN}",
     "HttpMethod": "PUT",
@@ -387,6 +413,78 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.CourseEnrollmentController",
+    "Method": "AddToSelected",
+    "RelativePath": "api/CourseEnrollment/add-to-selected",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "Pathify.DTOs.AddCourseRequestDTO\u002BAddCoursesRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.CourseEnrollmentController",
+    "Method": "GetAvailableCourses",
+    "RelativePath": "api/CourseEnrollment/available-courses",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.CourseEnrollmentController",
+    "Method": "ConfirmEnrollment",
+    "RelativePath": "api/CourseEnrollment/confirm-enrollment",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.CourseEnrollmentController",
+    "Method": "GetMyEnrolledCourses",
+    "RelativePath": "api/CourseEnrollment/my-enrolled-courses",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.CourseEnrollmentController",
+    "Method": "RemoveFromSelected",
+    "RelativePath": "api/CourseEnrollment/remove-from-selected/{courseId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "courseId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.CourseEnrollmentController",
+    "Method": "GetSelectedCourses",
+    "RelativePath": "api/CourseEnrollment/selected-courses",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

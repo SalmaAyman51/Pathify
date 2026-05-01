@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pathify.Models;
 
@@ -11,9 +12,11 @@ using Pathify.Models;
 namespace Pathify.Migrations
 {
     [DbContext(typeof(PathifyContext))]
-    partial class PathifyContextModelSnapshot : ModelSnapshot
+    [Migration("20260430190750_AddCurrentSemesterToStudent")]
+    partial class AddCurrentSemesterToStudent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace Pathify.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("CourseStudent", b =>
-                {
-                    b.Property<string>("CoursesCourseId")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("StudentSsnsStudentSsn")
-                        .HasColumnType("varchar(14)");
-
-                    b.HasKey("CoursesCourseId", "StudentSsnsStudentSsn");
-
-                    b.HasIndex("StudentSsnsStudentSsn");
-
-                    b.ToTable("CourseStudent");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -567,30 +555,6 @@ namespace Pathify.Migrations
                     b.ToTable("project", (string)null);
                 });
 
-            modelBuilder.Entity("Pathify.Models.SelectedCourse", b =>
-                {
-                    b.Property<string>("StudentSsn")
-                        .HasMaxLength(14)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(14)");
-
-                    b.Property<string>("CourseId")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("SelectedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("StudentSsn", "CourseId");
-
-                    b.HasIndex("CourseId");
-
-                    b.ToTable("SelectedCourses", (string)null);
-                });
-
             modelBuilder.Entity("Pathify.Models.Student", b =>
                 {
                     b.Property<string>("StudentSsn")
@@ -745,9 +709,6 @@ namespace Pathify.Migrations
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CurrentSemester")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
@@ -785,19 +746,22 @@ namespace Pathify.Migrations
                     b.ToTable("TempStudentData");
                 });
 
-            modelBuilder.Entity("CourseStudent", b =>
+            modelBuilder.Entity("SelectedCourse", b =>
                 {
-                    b.HasOne("Pathify.Models.Course", null)
-                        .WithMany()
-                        .HasForeignKey("CoursesCourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<string>("StudentSsn")
+                        .HasMaxLength(14)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(14)");
 
-                    b.HasOne("Pathify.Models.Student", null)
-                        .WithMany()
-                        .HasForeignKey("StudentSsnsStudentSsn")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<string>("CourseId")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("StudentSsn", "CourseId");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("SelectedCourses", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -966,21 +930,6 @@ namespace Pathify.Migrations
                     b.Navigation("InternalProfessorSsnNavigation");
                 });
 
-            modelBuilder.Entity("Pathify.Models.SelectedCourse", b =>
-                {
-                    b.HasOne("Pathify.Models.Course", null)
-                        .WithMany()
-                        .HasForeignKey("CourseId")
-                        .IsRequired()
-                        .HasConstraintName("FK_SelectedCourses_Course");
-
-                    b.HasOne("Pathify.Models.Student", null)
-                        .WithMany()
-                        .HasForeignKey("StudentSsn")
-                        .IsRequired()
-                        .HasConstraintName("FK_SelectedCourses_Student");
-                });
-
             modelBuilder.Entity("Pathify.Models.Student", b =>
                 {
                     b.HasOne("Pathify.Models.Project", "Project")
@@ -1027,6 +976,21 @@ namespace Pathify.Migrations
                     b.Navigation("InternalProfessorSsnNavigation");
 
                     b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("SelectedCourse", b =>
+                {
+                    b.HasOne("Pathify.Models.Course", null)
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .IsRequired()
+                        .HasConstraintName("FK_SelectedCourses_Course");
+
+                    b.HasOne("Pathify.Models.Student", null)
+                        .WithMany()
+                        .HasForeignKey("StudentSsn")
+                        .IsRequired()
+                        .HasConstraintName("FK_SelectedCourses_Student");
                 });
 
             modelBuilder.Entity("Pathify.Models.Adminstration", b =>

@@ -13,6 +13,7 @@
             public int EnrollmentYear { get; set; }
             public double GPA { get; set; }
             public string ?AcademicLevel { get; set; }
+        public string? CurrentSemester { get; set; } = "first semester";
         public int? LevelId { get; set; }
 
         public int? TeamId { get; set; }

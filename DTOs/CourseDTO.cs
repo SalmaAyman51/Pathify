@@ -38,7 +38,11 @@ public class CourseDto
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "CreditHours must be a positive number")]
         public int CreditHours { get; set; }
-    }
+
+            [Required]
+            [RegularExpression(@"^(Mandatory|Elective)$", ErrorMessage = "CourseType must be 'Mandatory' or 'Elective'")]
+            public string CourseType { get; set; }
+        }
 }
 }
 

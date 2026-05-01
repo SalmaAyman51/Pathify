@@ -453,7 +453,8 @@ namespace Pathify.Controllers
                 AdminSsn = model.AdminSsn,
                 CourseLevel = model.CourseLevel,
                 PreReqCourseId = model.PreReqCourseId,
-                CreditHours = model.CreditHours
+                CreditHours = model.CreditHours,
+                CourseType=model.CourseType
             };
 
             _context.Courses.Add(course);
@@ -541,6 +542,36 @@ namespace Pathify.Controllers
 
             await _context.SaveChangesAsync();
             return Ok(new { message = "Course deleted successfully" });
+        }
+        [HttpGet("get-all-courses")]
+        public async Task<ActionResult> GetAllCourses()
+        {
+            var courses = await _context.Courses
+                .Select(c => new
+                {
+                    c.CourseId,
+                    c.CourseName,
+                    c.CourseSemester,                  
+                    c.CourseLevel,                  
+                    c.PreReqCourseId
+                })
+                .ToListAsync();
+
+            if (!courses.Any())
+                return NotFound("No courses found");
+
+            return Ok(courses);
+        }
+
+        [HttpPut("update-semester")]
+        public async Task<IActionResult> UpdateAllStudentsSemester([FromBody] string semester)
+        {
+            var students = await _context.Students.ToListAsync();
+            foreach (var s in students)
+                s.CurrentSemester = semester;
+
+            await _context.SaveChangesAsync();
+            return Ok("Semester updated for all students");
         }
     }
 }

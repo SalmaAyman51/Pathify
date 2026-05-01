@@ -12,6 +12,7 @@ using Pathify.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using static Pathify.DTOs.RegisterDTO;
 
 
 namespace Pathify.Controllers
@@ -41,68 +42,71 @@ namespace Pathify.Controllers
 
         // ================= REGISTER =================
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] Register model)
+        public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             // ✅ Check لو الطالب موجود بالفعل في Students
             var existingStudent = await _context.Students
-                .FirstOrDefaultAsync(s => s.StudentSsn == model.SSN
-                                        || s.StudentId == model.StudentId
-                                        || s.Email == model.Email);
+                .FirstOrDefaultAsync(s => s.StudentSsn == dto.SSN
+                                        || s.StudentId == dto.StudentId
+                                        || s.Email == dto.Email);
 
             if (existingStudent != null)
                 return BadRequest("Student already exists in the system");
 
             // ✅ Check لو موجود في TempStudentData
             var existingTemp = await _context.TempStudentData
-                .FirstOrDefaultAsync(t => t.SSN == model.SSN
-                                        || t.StudentId == model.StudentId
-                                        || t.Email == model.Email);
+                .FirstOrDefaultAsync(t => t.SSN == dto.SSN
+                                        || t.StudentId == dto.StudentId
+                                        || t.Email == dto.Email);
 
             if (existingTemp != null)
                 return BadRequest("Student already registered and waiting for approval");
 
             var user = new ApplicationUser
             {
-                UserName = model.Email,
-                Email = model.Email,
-                PhoneNumber = model.PhoneNumber,
-                SSN = model.SSN,
+                UserName = dto.Email,
+                Email = dto.Email,
+                PhoneNumber = dto.PhoneNumber,
+                SSN = dto.SSN,
                 IsApproved = false
             };
 
-            var result = await _userManager.CreateAsync(user, model.Password);
+            var result = await _userManager.CreateAsync(user, dto.Password);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
-            await _userManager.AddToRoleAsync(user, model.Role);
+            await _userManager.AddToRoleAsync(user, dto.Role);
 
             var tempStudent = new TempStudentData
             {
-                SSN = model.SSN,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                StudentId = model.StudentId,
-                Email = model.Email,
-                BirthDate = model.BirthDate,
-                Gender = model.Gender,
-                EnrollmentYear = model.EnrollmentYear,
-                GPA = model.GPA,
-                AcademicLevel = model.AcademicLevel,
-                LevelId = model.LevelId,
-                ProjectId = model.ProjectId,
-                TeamId = model.TeamId
+                SSN = dto.SSN,
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                StudentId = dto.StudentId,
+                Email = dto.Email,
+                BirthDate = dto.BirthDate.ToDateTime(TimeOnly.MinValue), // DateOnly → DateTime
+                Gender = dto.Gender,
+                EnrollmentYear = dto.EnrollmentYear ?? 0,
+                GPA = (double)(dto.GPA ?? 0),                           // decimal? → double
+                AcademicLevel = dto.AcademicLevel,
+                LevelId = dto.LevelId,
+                ProjectId = dto.ProjectId,
+                TeamId = dto.TeamId,
+                CurrentSemester=dto.CurrentSemester
             };
 
             _context.TempStudentData.Add(tempStudent);
             await _context.SaveChangesAsync();
 
-            return Ok("Registered, waiting for admin approval");
+            return Ok("Registered successfully, waiting for admin approval");
         }
         // ================= LOGIN =================
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO model)
         {
-            // ✅ الكل بيدخل بالـ SSN
             var user = _userManager.Users.FirstOrDefault(u => u.SSN == model.SSN);
 
             if (user == null)
@@ -119,6 +123,7 @@ namespace Pathify.Controllers
             var claims = new List<Claim>
     {
         new Claim(ClaimTypes.Name, user.UserName!),
+        new Claim(ClaimTypes.NameIdentifier, user.SSN), // ← أضفنا ده
         new Claim("SSN", user.SSN)
     };
 
@@ -243,7 +248,8 @@ namespace Pathify.Controllers
                 LevelId = tempStudent.LevelId ?? 1, // ✅ أضف السطر ده
                 TeamId = tempStudent.TeamId,        // ✅ أضف السطر ده
                 ProjectId = tempStudent.ProjectId,  // ✅ أضف السطر ده
-                IsApproved = true
+                IsApproved = true,
+                CurrentSemester= tempStudent.CurrentSemester,
             };
             _context.Students.Add(student);
 

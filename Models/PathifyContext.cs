@@ -22,18 +22,6 @@ public partial class PathifyContext : IdentityDbContext<ApplicationUser>
 
     public virtual DbSet<Adminstration> Adminstrations { get; set; }
 
-    //public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
-
-    //public virtual DbSet<AspNetRoleClaim> AspNetRoleClaims { get; set; }
-
-    //public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
-
-    //public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
-
-    //public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
-
-    //public virtual DbSet<AspNetUserToken> AspNetUserTokens { get; set; }
-
     public virtual DbSet<Course> Courses { get; set; }
 
     public virtual DbSet<Enrollment> Enrollments { get; set; }
@@ -56,6 +44,7 @@ public partial class PathifyContext : IdentityDbContext<ApplicationUser>
 
     public virtual DbSet<Supervisor> Supervisors { get; set; }
     public virtual DbSet<TempStudentData> TempStudentData { get; set; }
+    public virtual DbSet<SelectedCourse> SelectedCourses { get; set; }
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -119,71 +108,6 @@ public partial class PathifyContext : IdentityDbContext<ApplicationUser>
                 .HasConstraintName("FK_Adminstration_Adminstration");
         });
 
-        //modelBuilder.Entity<AspNetRole>(entity =>
-        //{
-        //    entity.HasIndex(e => e.NormalizedName, "RoleNameIndex")
-        //        .IsUnique()
-        //        .HasFilter("([NormalizedName] IS NOT NULL)");
-
-        //    entity.Property(e => e.Name).HasMaxLength(256);
-        //    entity.Property(e => e.NormalizedName).HasMaxLength(256);
-        //});
-
-        //modelBuilder.Entity<AspNetRoleClaim>(entity =>
-        //{
-        //    entity.HasIndex(e => e.RoleId, "IX_AspNetRoleClaims_RoleId");
-
-        //    entity.HasOne(d => d.Role).WithMany(p => p.AspNetRoleClaims).HasForeignKey(d => d.RoleId);
-        //});
-
-        //modelBuilder.Entity<AspNetUser>(entity =>
-        //{
-        //    entity.HasIndex(e => e.NormalizedEmail, "EmailIndex");
-
-        //    entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex")
-        //        .IsUnique()
-        //        .HasFilter("([NormalizedUserName] IS NOT NULL)");
-
-        //    entity.Property(e => e.Email).HasMaxLength(256);
-        //    entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
-        //    entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
-        //    entity.Property(e => e.UserName).HasMaxLength(256);
-
-        //    entity.HasMany(d => d.Roles).WithMany(p => p.Users)
-        //        .UsingEntity<Dictionary<string, object>>(
-        //            "AspNetUserRole",
-        //            r => r.HasOne<AspNetRole>().WithMany().HasForeignKey("RoleId"),
-        //            l => l.HasOne<AspNetUser>().WithMany().HasForeignKey("UserId"),
-        //            j =>
-        //            {
-        //                j.HasKey("UserId", "RoleId");
-        //                j.ToTable("AspNetUserRoles");
-        //                j.HasIndex(new[] { "RoleId" }, "IX_AspNetUserRoles_RoleId");
-        //            });
-        //});
-
-        //modelBuilder.Entity<AspNetUserClaim>(entity =>
-        //{
-        //    entity.HasIndex(e => e.UserId, "IX_AspNetUserClaims_UserId");
-
-        //    entity.HasOne(d => d.User).WithMany(p => p.AspNetUserClaims).HasForeignKey(d => d.UserId);
-        //});
-
-        //modelBuilder.Entity<AspNetUserLogin>(entity =>
-        //{
-        //    entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
-
-        //    entity.HasIndex(e => e.UserId, "IX_AspNetUserLogins_UserId");
-
-        //    entity.HasOne(d => d.User).WithMany(p => p.AspNetUserLogins).HasForeignKey(d => d.UserId);
-        //});
-
-        //modelBuilder.Entity<AspNetUserToken>(entity =>
-        //{
-        //    entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
-
-        //    entity.HasOne(d => d.User).WithMany(p => p.AspNetUserTokens).HasForeignKey(d => d.UserId);
-        //});
 
         modelBuilder.Entity<Course>(entity =>
         {
@@ -426,26 +350,32 @@ public partial class PathifyContext : IdentityDbContext<ApplicationUser>
                 .HasForeignKey(d => d.ProjectId)
                 .HasConstraintName("FK_Students_project");
 
-            entity.HasMany(d => d.Courses).WithMany(p => p.StudentSsns)
-                .UsingEntity<Dictionary<string, object>>(
-                    "SelectedCourse",
-                    r => r.HasOne<Course>().WithMany()
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_SelectedCourses_Course"),
-                    l => l.HasOne<Student>().WithMany()
-                        .HasForeignKey("StudentSsn")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_SelectedCourses_Student"),
-                    j =>
-                    {
-                        j.HasKey("StudentSsn", "CourseId");
-                        j.ToTable("SelectedCourses");
-                        j.IndexerProperty<string>("StudentSsn")
-                            .HasMaxLength(14)
-                            .IsUnicode(false);
-                        j.IndexerProperty<string>("CourseId").HasMaxLength(50);
-                    });
+           
+        });
+
+        modelBuilder.Entity<SelectedCourse>(entity =>
+        {
+            entity.HasKey(e => new { e.StudentSsn, e.CourseId });
+            entity.ToTable("SelectedCourses");
+
+            entity.Property(e => e.StudentSsn)
+                .HasMaxLength(14)
+                .IsUnicode(false);
+
+            entity.Property(e => e.CourseId)
+                .HasMaxLength(50);
+
+            entity.HasOne<Student>()
+                .WithMany()
+                .HasForeignKey(e => e.StudentSsn)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SelectedCourses_Student");
+
+            entity.HasOne<Course>()
+                .WithMany()
+                .HasForeignKey(e => e.CourseId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SelectedCourses_Course");
         });
 
         modelBuilder.Entity<StudentPhone>(entity =>
@@ -467,6 +397,8 @@ public partial class PathifyContext : IdentityDbContext<ApplicationUser>
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_student_phone_Students");
         });
+
+       
 
         modelBuilder.Entity<Supervisor>(entity =>
         {
@@ -503,6 +435,7 @@ public partial class PathifyContext : IdentityDbContext<ApplicationUser>
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_supervisors_project_team");
         });
+
         modelBuilder.Entity<TempStudentData>(entity =>
         {
             entity.HasKey(e => e.SSN);

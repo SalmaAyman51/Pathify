@@ -14,17 +14,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Register"
+                "$ref": "#/components/schemas/RegisterDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/Register"
+                "$ref": "#/components/schemas/RegisterDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/Register"
+                "$ref": "#/components/schemas/RegisterDto"
               }
             }
           }
@@ -670,6 +670,150 @@
         }
       }
     },
+    "/api/Admin/get-all-courses": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Admin/update-semester": {
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/CourseEnrollment/available-courses": {
+      "get": {
+        "tags": [
+          "CourseEnrollment"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/CourseEnrollment/selected-courses": {
+      "get": {
+        "tags": [
+          "CourseEnrollment"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/CourseEnrollment/add-to-selected": {
+      "post": {
+        "tags": [
+          "CourseEnrollment"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCoursesRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCoursesRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCoursesRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/CourseEnrollment/remove-from-selected/{courseId}": {
+      "delete": {
+        "tags": [
+          "CourseEnrollment"
+        ],
+        "parameters": [
+          {
+            "name": "courseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/CourseEnrollment/confirm-enrollment": {
+      "post": {
+        "tags": [
+          "CourseEnrollment"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/CourseEnrollment/my-enrolled-courses": {
+      "get": {
+        "tags": [
+          "CourseEnrollment"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Professor": {
       "get": {
         "tags": [
@@ -741,6 +885,19 @@
   },
   "components": {
     "schemas": {
+      "AddCoursesRequest": {
+        "type": "object",
+        "properties": {
+          "courseIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CourseDto": {
         "required": [
           "adminSsn",
@@ -748,6 +905,7 @@
           "courseLevel",
           "courseName",
           "courseSemester",
+          "courseType",
           "creditHours",
           "departmentName"
         ],
@@ -794,6 +952,11 @@
             "minimum": 1,
             "type": "integer",
             "format": "int32"
+          },
+          "courseType": {
+            "minLength": 1,
+            "pattern": "^(Mandatory|Elective)$",
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -894,63 +1057,83 @@
         },
         "additionalProperties": false
       },
-      "Register": {
+      "RegisterDto": {
+        "required": [
+          "birthDate",
+          "email",
+          "firstName",
+          "gender",
+          "lastName",
+          "password",
+          "role",
+          "ssn",
+          "studentId"
+        ],
         "type": "object",
         "properties": {
-          "email": {
-            "type": "string",
-            "nullable": true
-          },
-          "password": {
-            "type": "string",
-            "nullable": true
-          },
-          "firstName": {
-            "type": "string",
-            "nullable": true
-          },
-          "lastName": {
-            "type": "string",
-            "nullable": true
-          },
-          "phoneNumber": {
-            "type": "string",
-            "nullable": true
-          },
-          "role": {
-            "type": "string",
-            "nullable": true
-          },
           "ssn": {
-            "type": "string",
-            "nullable": true
+            "minLength": 1,
+            "type": "string"
           },
-          "enrollmentYear": {
+          "studentId": {
             "type": "integer",
             "format": "int32"
           },
+          "firstName": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          },
+          "lastName": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          },
+          "email": {
+            "minLength": 1,
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "minLength": 8,
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "format": "tel",
+            "nullable": true
+          },
+          "birthDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "gender": {
+            "minLength": 1,
+            "pattern": "^(Male|Female)$",
+            "type": "string"
+          },
+          "enrollmentYear": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "gpa": {
+            "maximum": 4,
+            "minimum": 0,
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "nullable": true
           },
           "academicLevel": {
             "type": "string",
             "nullable": true
           },
-          "birthDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "gender": {
-            "type": "string",
-            "nullable": true
-          },
-          "studentId": {
+          "levelId": {
             "type": "integer",
             "format": "int32",
             "nullable": true
           },
-          "levelId": {
+          "projectId": {
             "type": "integer",
             "format": "int32",
             "nullable": true
@@ -960,9 +1143,12 @@
             "format": "int32",
             "nullable": true
           },
-          "projectId": {
-            "type": "integer",
-            "format": "int32",
+          "role": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "currentSemester": {
+            "type": "string",
             "nullable": true
           }
         },
@@ -1130,6 +1316,9 @@
     },
     {
       "name": "Admin"
+    },
+    {
+      "name": "CourseEnrollment"
     },
     {
       "name": "Professor"
