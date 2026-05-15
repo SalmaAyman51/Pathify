@@ -41,5 +41,35 @@ namespace Pathify.Controllers
             });
         }
 
+        [HttpGet("search-student-courses/{query}")]
+        public async Task<ActionResult> SearchStudentCourses(string query)
+        {
+            // ✅ جيب الـ SSN من الـ Token
+            var ssn = User.FindFirst("SSN")?.Value;
+            if (ssn == null) return Unauthorized("Invalid token");
+
+            var student = await _context.Students.FindAsync(ssn);
+            if (student == null) return NotFound("Student not found");
+
+            var courses = await _context.Enrollments
+                .Where(e => e.StudentSsn == ssn &&
+                           (e.CourseId.StartsWith(query) ||
+                            e.Course.CourseName.StartsWith(query)))
+                .Select(e => new
+                {
+                    e.CourseId,
+                    e.Course.CourseName,
+                    e.Course.CourseSemester,
+                    e.Course.CreditHours,
+                    e.Passed
+                })
+                .ToListAsync();
+
+            if (!courses.Any())
+                return NotFound("No courses found");
+
+            return Ok(courses);
+        }
+
     }
     }

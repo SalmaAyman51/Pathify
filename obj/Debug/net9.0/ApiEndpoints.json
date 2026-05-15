@@ -275,14 +275,30 @@
   },
   {
     "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "ApproveTeam",
+    "RelativePath": "api/Admin/approve-team/{teamId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "teamId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
     "Method": "ApproveUser",
-    "RelativePath": "api/Admin/approve/{userId}",
+    "RelativePath": "api/Admin/approve-user/{email}",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "userId",
+        "Name": "email",
         "Type": "System.String",
         "IsRequired": true
       }
@@ -297,6 +313,27 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [
+      {
+        "Name": "courseId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "DeleteEnrollment",
+    "RelativePath": "api/Admin/delete-enrollment/{ssn}/{courseId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ssn",
+        "Type": "System.String",
+        "IsRequired": true
+      },
       {
         "Name": "courseId",
         "Type": "System.String",
@@ -344,8 +381,39 @@
   },
   {
     "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "EditEnrollment",
+    "RelativePath": "api/Admin/edit-enrollment/{ssn}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ssn",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "model",
+        "Type": "Pathify.DTOs.EnrollmentEditDTO\u002BEnrollmentEditDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
     "Method": "GetAllCourses",
     "RelativePath": "api/Admin/get-all-courses",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "GetAllEnrollments",
+    "RelativePath": "api/Admin/get-all-enrollments",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -370,12 +438,133 @@
   },
   {
     "ContainingType": "Pathify.Controllers.AdminController",
-    "Method": "GetPendingUsers",
-    "RelativePath": "api/Admin/pending",
+    "Method": "GetProfessorsCount",
+    "RelativePath": "api/Admin/get-professors-count",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "GetStudentsCount",
+    "RelativePath": "api/Admin/get-students-count",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "GetPendingApprovals",
+    "RelativePath": "api/Admin/pending-approvals",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "RejectUser",
+    "RelativePath": "api/Admin/reject-user/{email}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "SearchCourses",
+    "RelativePath": "api/Admin/search-courses/{query}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "query",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "SearchEnrollment",
+    "RelativePath": "api/Admin/search-enrollment/{query}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "query",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "SearchProfessors",
+    "RelativePath": "api/Admin/search-professors/{name}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "name",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "SearchStudents",
+    "RelativePath": "api/Admin/search-students/{name}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "name",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "SetTeamMembersLimit",
+    "RelativePath": "api/Admin/set-team-members-limit/{min}/{max}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "min",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "max",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -498,6 +687,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "Pathify.Controllers.ProjectManagementController",
+    "Method": "RegisterTeam",
+    "RelativePath": "api/ProjectManagement/register-team",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "Pathify.DTOs.RegisterTeamDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Pathify.Controllers.StudentDashboardController",
     "Method": "GetCompletedCredits",
     "RelativePath": "api/StudentDashboard/completed-credits/{ssn}",
@@ -523,6 +728,22 @@
     "Parameters": [
       {
         "Name": "ssn",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.StudentDashboardController",
+    "Method": "SearchStudentCourses",
+    "RelativePath": "api/StudentDashboard/search-student-courses/{query}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "query",
         "Type": "System.String",
         "IsRequired": true
       }

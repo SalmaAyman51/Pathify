@@ -1,4 +1,4 @@
-
+﻿
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Build.Construction;
@@ -43,16 +43,31 @@ namespace Pathify
             })
                 .AddJwtBearer(options =>
                 {
-                    options.TokenValidationParameters = new TokenValidationParameters
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+                };
+                    options.Events = new JwtBearerEvents
                     {
-                        ValidateIssuer = true,
-                        ValidateAudience = false,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+                        // ✅ لما الـ Token ينتهي
+                        OnChallenge = context =>
+                        {
+                            context.HandleResponse();
+                            context.Response.StatusCode = 401;
+                            context.Response.ContentType = "application/json";
+                            return context.Response.WriteAsync(
+                                "{\"message\": \"Session expired, please login again\"}");
+                        }
                     };
+
                 });
+        
+        
              
             builder.Services.AddAuthorization(options =>
             {
@@ -60,6 +75,12 @@ namespace Pathify
                 options.AddPolicy("UserPolicy", policy => policy.RequireRole("User"));
                 options.AddPolicy("ProfessorPolicy", policy => policy.RequireRole("Professor"));
             });
+    //        builder.Services.AddAuthentication()
+    //.AddJwtBearer(options =>
+    //{
+       
+    //    };
+    //});
             builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {

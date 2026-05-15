@@ -45,7 +45,9 @@ public partial class PathifyContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<Supervisor> Supervisors { get; set; }
     public virtual DbSet<TempStudentData> TempStudentData { get; set; }
     public virtual DbSet<SelectedCourse> SelectedCourses { get; set; }
-
+    public virtual DbSet<Team> Teams { get; set; }
+    public virtual DbSet<TeamMember> TeamMembers { get; set; }
+    public virtual DbSet<TeamLimit> TeamLimits { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -56,7 +58,7 @@ public partial class PathifyContext : IdentityDbContext<ApplicationUser>
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<AdminPhone>(entity =>
         {
-            
+
             entity.HasKey(e => new { e.AdminSsn, e.PhoneNumber }).HasName("PK__Admin_ph__BF0595A377126546");
 
             entity.ToTable("Admin_phone");
@@ -75,6 +77,25 @@ public partial class PathifyContext : IdentityDbContext<ApplicationUser>
                 .HasConstraintName("FK_Admin_phone_Adminstration");
         });
 
+        modelBuilder.Entity<TeamMember>(entity =>
+        {
+            entity.HasKey(e => new { e.TeamId, e.StudentSsn });
+
+            entity.HasOne(e => e.Team)
+                .WithMany(t => t.TeamMembers)
+                .HasForeignKey(e => e.TeamId);
+
+            entity.HasOne(e => e.Student)
+                .WithMany()
+                .HasForeignKey(e => e.StudentSsn);
+        });
+
+        modelBuilder.Entity<Team>(entity =>
+        {
+            entity.HasOne(e => e.Leader)
+                .WithMany()
+                .HasForeignKey(e => e.LeaderSsn);
+        });
         modelBuilder.Entity<Adminstration>(entity =>
         {
             entity.HasKey(e => e.AdminSsn);
@@ -350,7 +371,7 @@ public partial class PathifyContext : IdentityDbContext<ApplicationUser>
                 .HasForeignKey(d => d.ProjectId)
                 .HasConstraintName("FK_Students_project");
 
-           
+
         });
 
         modelBuilder.Entity<SelectedCourse>(entity =>
@@ -398,7 +419,7 @@ public partial class PathifyContext : IdentityDbContext<ApplicationUser>
                 .HasConstraintName("FK_student_phone_Students");
         });
 
-       
+
 
         modelBuilder.Entity<Supervisor>(entity =>
         {
@@ -452,4 +473,5 @@ public partial class PathifyContext : IdentityDbContext<ApplicationUser>
     {
         throw new NotImplementedException();
     }
+
 }

@@ -8,6 +8,7 @@ using Pathify.Models;
 using System.Linq;
 using static Pathify.DTOs.CourseDTO;
 using static Pathify.DTOs.CreateProfessorDTO;
+using static Pathify.DTOs.EnrollmentEditDTO;
 using static Pathify.DTOs.UpdateProfessorsDTO;
 
 namespace Pathify.Controllers
@@ -32,57 +33,95 @@ namespace Pathify.Controllers
         {
             return Ok("You have accessed the Admin controller.");
         }
-        [HttpPost("approve/{userId}")]
-        public async Task<IActionResult> ApproveUser(string userId)
+
+        [HttpGet("pending-approvals")]
+        public async Task<ActionResult> GetPendingApprovals()
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var pendingStudents = await _context.TempStudentData
+                .Select(t => new
+                {
+                    t.SSN,
+                    t.FirstName,
+                    t.LastName,
+                    t.Email,
+                    t.StudentId,
+                    t.AcademicLevel,
+                    t.GPA,
+                    t.EnrollmentYear,
+                    t.Gender,
+                    t.BirthDate,
+                    t.LevelId,
+                    t.ProjectId,
+                    t.TeamId
+                })
+                .ToListAsync();
 
-            if (user == null)
-                return NotFound();
+            if (!pendingStudents.Any())
+                return NotFound("No pending approvals");
 
-            if (user.IsApproved)
-                return BadRequest("Already approved");
+            return Ok(pendingStudents);
+        }
 
-            // ✅ نوافق عليه
+        [HttpPost("approve-user/{email}")]
+        public async Task<IActionResult> ApproveUser(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null) return NotFound("User not found");
+
+            var tempStudent = await _context.TempStudentData
+                .FirstOrDefaultAsync(t => t.SSN == user.SSN);
+            if (tempStudent == null) return NotFound("Student data not found");
+
+            var existingStudent = await _context.Students
+                .FirstOrDefaultAsync(s => s.StudentSsn == tempStudent.SSN
+                                        || s.StudentId == tempStudent.StudentId);
+            if (existingStudent != null)
+                return BadRequest("Student already exists");
+
             user.IsApproved = true;
             await _userManager.UpdateAsync(user);
 
-            // ✅ نحوله لـ Student
             var student = new Student
             {
-                StudentSsn = user.SSN,
-                //Fname = user.FirstName,
-                //Lname = user.LastName,
-                //FullName = user.FirstName + " " + user.LastName,
-                Email = user.Email,
-                //Gpa = (decimal?)user.GPA,
-                //BirthDate = DateOnly.FromDateTime(user.BirthDate),
-                //EnrollmentYear = user.EnrollmentYear,
-                //AcademicLevel = user.AcademicLevel,
+                StudentSsn = tempStudent.SSN,
+                StudentId = tempStudent.StudentId,
+                Fname = tempStudent.FirstName,
+                Lname = tempStudent.LastName,
+                Email = tempStudent.Email,
+                BirthDate = DateOnly.FromDateTime(tempStudent.BirthDate),
+                Gender = tempStudent.Gender ?? "N/A",
+                EnrollmentYear = tempStudent.EnrollmentYear,
+                Gpa = (decimal?)tempStudent.GPA,
+                AcademicLevel = tempStudent.AcademicLevel,
+                LevelId = tempStudent.LevelId ?? 1,
+                TeamId = tempStudent.TeamId,
+                ProjectId = tempStudent.ProjectId,
                 IsApproved = true
             };
 
             _context.Students.Add(student);
+            _context.TempStudentData.Remove(tempStudent);
             await _context.SaveChangesAsync();
 
-            return Ok("User approved and added as student");
+            return Ok("User approved successfully");
         }
 
-        [HttpGet("pending")]
-        public IActionResult GetPendingUsers()
+        [HttpDelete("reject-user/{email}")]
+        public async Task<IActionResult> RejectUser(string email)
         {
-            var users = _userManager.Users
-                .Where(u => !u.IsApproved)
-                .Select(u => new
-                {
-                    u.Id,
-                    u.Email,
-                    //u.FirstName,
-                    //u.LastName,
-                    u.SSN
-                }).ToList();
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null) return NotFound("User not found");
 
-            return Ok(users);
+            var tempStudent = await _context.TempStudentData
+                .FirstOrDefaultAsync(t => t.SSN == user.SSN);
+
+            if (tempStudent != null)
+                _context.TempStudentData.Remove(tempStudent);
+
+            await _userManager.DeleteAsync(user);
+            await _context.SaveChangesAsync();
+
+            return Ok("User rejected and removed successfully");
         }
 
         [HttpGet("get-all-students")]
@@ -104,9 +143,6 @@ namespace Pathify.Controllers
 
             return Ok(result);
         }
-
-
-        
 
         [HttpPut("update-student/{SSN}")]
         public async Task<ActionResult> UpdateStudent(string SSN, [FromBody] UpdateStudentDto updatedData)
@@ -147,9 +183,6 @@ namespace Pathify.Controllers
             student.TeamId = updatedData.TeamId ?? student.TeamId;
             student.ProjectId = updatedData.ProjectId ?? student.ProjectId;
             student.LevelId = updatedData.LevelId ?? student.LevelId;
-
-            // ✅ StudentId مش بنغيره خالص عشان Unique وممكن يسبب مشاكل
-
             await _context.SaveChangesAsync();
             return Ok(new { message = "Edit is done" });
         }
@@ -173,8 +206,7 @@ namespace Pathify.Controllers
             await _context.SaveChangesAsync();
             return Ok(new { message = "The Student has been deleted successfully" });
         }
-        // ✅ إضافة Internal Professor
-        // ✅ إضافة Internal Professor
+       
         [HttpPost("add-internal-professor")]
         public async Task<IActionResult> AddInternalProfessor([FromBody] CreateInternalProfessorDTO model)
         {
@@ -520,13 +552,6 @@ namespace Pathify.Controllers
             if (enrollments.Any())
                 _context.Enrollments.RemoveRange(enrollments);
 
-            //// ✅ امسح الـ SelectedCourses المرتبطة بالكورس
-            //var selectedCourses = await _context.Set<Dictionary<string, object>>("SelectedCourses")
-            //    .Where(sc => EF.Property<string>(sc, "CourseId") == courseId)
-            //    .ToListAsync();
-            //if (selectedCourses.Any())
-            //    _context.Set<Dictionary<string, object>>("SelectedCourses").RemoveRange(selectedCourses);
-
             // ✅ امسح الكورسات اللي بتاخد الكورس ده كـ PreReq
             var dependentCourses = await _context.Courses
                 .Where(c => c.PreReqCourseId == courseId)
@@ -537,7 +562,7 @@ namespace Pathify.Controllers
                     c.PreReqCourseId = null;
             }
 
-            // ✅ امسح الكورس
+           
             _context.Courses.Remove(course);
 
             await _context.SaveChangesAsync();
@@ -572,6 +597,272 @@ namespace Pathify.Controllers
 
             await _context.SaveChangesAsync();
             return Ok("Semester updated for all students");
+        }
+
+        [HttpPut("edit-enrollment/{ssn}")]
+        public async Task<ActionResult> EditEnrollment(string ssn, [FromBody] EnrollmentEditDto model)
+        {
+            // ✅ جيب الـ Enrollment الحالي بالـ OldCourseId
+            var enrollment = await _context.Enrollments
+                .FirstOrDefaultAsync(e => e.StudentSsn == ssn && e.CourseId == model.OldCourseId);
+            if (enrollment == null) return NotFound("Enrollment not found");
+
+            // ✅ تأكد إن الكورس الجديد موجود
+            var newCourse = await _context.Courses.FindAsync(model.NewCourseId);
+            if (newCourse == null) return BadRequest("New course not found");
+
+            // ✅ تأكد إن الطالب مش مسجل في الكورس الجديد بالفعل
+            var alreadyEnrolled = await _context.Enrollments
+                .FirstOrDefaultAsync(e => e.StudentSsn == ssn && e.CourseId == model.NewCourseId);
+            if (alreadyEnrolled != null)
+                return BadRequest("Student already enrolled in this course");
+
+            // ✅ تأكد إن الطالب محقق الـ Prerequisite
+            if (newCourse.PreReqCourseId != null)
+            {
+                var passedPreReq = await _context.Enrollments
+                    .FirstOrDefaultAsync(e => e.StudentSsn == ssn
+                                           && e.CourseId == newCourse.PreReqCourseId
+                                           && e.Passed == true);
+                if (passedPreReq == null)
+                    return BadRequest($"Student must pass course '{newCourse.PreReqCourseId}' before enrolling in '{model.NewCourseId}'");
+            }
+
+            _context.Enrollments.Remove(enrollment);
+
+            var newEnrollment = new Enrollment
+            {
+                StudentSsn = ssn,
+                CourseId = model.NewCourseId,
+                EnrollmentDate = enrollment.EnrollmentDate,
+                AdminSsn = enrollment.AdminSsn,
+                Passed = enrollment.Passed
+            };
+
+            _context.Enrollments.Add(newEnrollment);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Enrollment updated successfully" });
+        }
+
+        [HttpDelete("delete-enrollment/{ssn}/{courseId}")]
+        public async Task<ActionResult> DeleteEnrollment(string ssn, string courseId)
+        {
+            // ✅ تأكد إن الطالب موجود
+            var student = await _context.Students.FindAsync(ssn);
+            if (student == null) return NotFound("Student not found");
+
+            // ✅ جيب الـ Enrollment
+            var enrollment = await _context.Enrollments
+                .FirstOrDefaultAsync(e => e.StudentSsn == ssn && e.CourseId == courseId);
+            if (enrollment == null) return NotFound("Enrollment not found");
+
+            _context.Enrollments.Remove(enrollment);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Enrollment deleted successfully" });
+        }
+
+        [HttpGet("get-all-enrollments")]
+        public async Task<ActionResult> GetAllEnrollments()
+        {
+            var enrollments = await _context.Enrollments
+                .Select(e => new
+                {
+                    e.StudentSsn,
+                    e.CourseId,
+                    CourseName = e.Course.CourseName,
+                    e.EnrollmentDate,
+                    e.Passed,
+                    e.AdminSsn
+                })
+                .ToListAsync();
+
+            if (!enrollments.Any())
+                return NotFound("No enrollments found");
+
+            return Ok(enrollments);
+        }
+        [HttpGet("get-students-count")]
+        public async Task<ActionResult> GetStudentsCount()
+        {
+            var count = await _context.Students.CountAsync();
+            return Ok(new { studentsCount = count });
+        }
+
+        [HttpGet("get-professors-count")]
+        public async Task<ActionResult> GetProfessorsCount()
+        {
+            var totalCount = await _context.InternalProfessors.CountAsync()
+                           + await _context.ExternalProfessors.CountAsync();
+
+            return Ok(new { totalProfessorsCount = totalCount });
+        }
+
+        [HttpGet("search-students/{name}")]
+        public async Task<ActionResult> SearchStudents(string name)
+        {
+            var students = await _context.Students
+                .Where(s => s.Fname.StartsWith(name) || s.Lname.StartsWith(name))
+                .Select(s => new
+                {
+                    s.StudentSsn,
+                    s.StudentId,
+                    s.Fname,
+                    s.Lname,
+                    s.Email,
+                    s.AcademicLevel,
+                    s.Gpa
+                })
+                .ToListAsync();
+
+            if (!students.Any())
+                return NotFound("No students found");
+
+            return Ok(students);
+        }
+
+        [HttpGet("search-professors/{name}")]
+        public async Task<ActionResult> SearchProfessors(string name)
+        {
+            var internalProfs = await _context.InternalProfessors
+                .Where(p => p.InternalProfessorName.StartsWith(name))
+                .Select(p => new
+                {
+                    p.InternalProfessorSsn,
+                    p.InternalProfessorName,
+                    p.DeptName,
+                    Type = "Internal"
+                })
+                .ToListAsync();
+
+            var externalProfs = await _context.ExternalProfessors
+                .Where(p => p.ExternalProfessorName.StartsWith(name))
+                .Select(p => new
+                {
+                    p.ExternalProfessorSsn,
+                    p.ExternalProfessorName,
+                    p.DeptName,
+                    Type = "External"
+                })
+                .ToListAsync();
+
+            var result = internalProfs.Cast<object>().Concat(externalProfs).ToList();
+
+            if (!result.Any())
+                return NotFound("No professors found");
+
+            return Ok(result);
+        }
+
+        [HttpGet("search-courses/{query}")]
+        public async Task<ActionResult> SearchCourses(string query)
+        {
+            var courses = await _context.Courses
+                .Where(c => c.CourseId.StartsWith(query) || c.CourseName.StartsWith(query))
+                .Select(c => new
+                {
+                    c.CourseId,
+                    c.CourseName,
+                    c.CourseSemester,
+                    c.DepartmentName,
+                    c.CourseLevel,
+                    c.CreditHours,
+                    c.CourseType
+                })
+                .ToListAsync();
+
+            if (!courses.Any())
+                return NotFound("No courses found");
+
+            return Ok(courses);
+        }
+        [HttpGet("search-enrollment/{query}")]
+        public async Task<ActionResult> SearchEnrollment(string query)
+        {
+            var enrollments = await _context.Enrollments
+                .Where(e => e.StudentSsn.StartsWith(query) ||
+                            e.StudentSsnNavigation.Fname.StartsWith(query) ||
+                            e.StudentSsnNavigation.Lname.StartsWith(query))
+                .Select(e => new
+                {
+                    e.StudentSsn,
+                    StudentName = e.StudentSsnNavigation.Fname + " " + e.StudentSsnNavigation.Lname,
+                    e.CourseId,
+                    CourseName = e.Course.CourseName,
+                    e.EnrollmentDate,
+                    e.Passed
+                })
+                .ToListAsync();
+
+            if (!enrollments.Any())
+                return NotFound("No enrollments found");
+
+            return Ok(enrollments);
+        }
+
+        [HttpPut("set-team-members-limit/{min}/{max}")]
+        public async Task<ActionResult> SetTeamMembersLimit(int min, int max)
+        {
+            if (min <= 0 || max <= 0)
+                return BadRequest("Min and Max members must be positive numbers");
+
+            if (min >= max)
+                return BadRequest("Min members must be less than Max members");
+
+            // ✅ تأكد إنه مفيش تيمات مسجلة
+            var anyTeam = await _context.Teams.AnyAsync();
+            if (anyTeam)
+                return BadRequest("Cannot change limits after teams have been registered");
+
+            // ✅ تأكد إنه مش متحدد قبل كده
+            var existingLimit = await _context.TeamLimits.FirstOrDefaultAsync();
+            if (existingLimit != null)
+                return BadRequest("Team limits have already been set");
+
+            _context.TeamLimits.Add(new TeamLimit
+            {
+                MinMembers = min,
+                MaxMembers = max
+            });
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = $"Team size set: Min = {min}, Max = {max}" });
+        }
+
+        [HttpPut("approve-team/{teamId}")]
+        public async Task<ActionResult> ApproveTeam(int teamId)
+        {
+            var team = await _context.Teams
+                .Include(t => t.TeamMembers)
+                .FirstOrDefaultAsync(t => t.TeamId == teamId);
+
+            if (team == null) return NotFound("Team not found");
+            if (team.IsApproved) return BadRequest("Team is already approved");
+
+            // ✅ جيب كل الأعضاء من TeamMembers
+            var pendingMembers = team.TeamMembers.ToList();
+
+            // ✅ حدث كل student بالـ TeamId
+            foreach (var member in pendingMembers)
+            {
+                var student = await _context.Students
+                    .FirstOrDefaultAsync(s => s.StudentSsn == member.StudentSsn);
+
+                if (student != null)
+                    student.TeamId = team.TeamId;
+            }
+
+            // ✅ امسح من TeamMembers
+            _context.TeamMembers.RemoveRange(pendingMembers);
+
+            // ✅ Approve التيم
+            team.IsApproved = true;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Team approved successfully", teamId = team.TeamId });
         }
     }
 }

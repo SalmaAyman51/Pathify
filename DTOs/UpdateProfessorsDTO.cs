@@ -6,6 +6,7 @@
         {
             public string? ExternalProfessorName { get; set; }
             public string? DeptName { get; set; }
+            public string? Email { get; set; }
             public List<ExternalProfessorPhoneDto>? ExternalProfessorPhones { get; set; }
         }
 
@@ -18,6 +19,7 @@
         {
             public string? InternalProfessorName { get; set; }
             public string? DeptName { get; set; }
+            public string? Email { get; set; }
             public List<InternalProfessorPhoneDto>? InternalProfessorPhones { get; set; }
         }
 

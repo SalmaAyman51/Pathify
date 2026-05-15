@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pathify.Models;
 
@@ -11,9 +12,11 @@ using Pathify.Models;
 namespace Pathify.Migrations
 {
     [DbContext(typeof(PathifyContext))]
-    partial class PathifyContextModelSnapshot : ModelSnapshot
+    [Migration("20260514190131_AddIsApprovedToTeamMember")]
+    partial class AddIsApprovedToTeamMember
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -756,30 +759,14 @@ namespace Pathify.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(14)");
 
+                    b.Property<int>("MaxMembers")
+                        .HasColumnType("int");
+
                     b.HasKey("TeamId");
 
                     b.HasIndex("LeaderSsn");
 
                     b.ToTable("Teams");
-                });
-
-            modelBuilder.Entity("Pathify.Models.TeamLimit", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("MaxMembers")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MinMembers")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TeamLimits");
                 });
 
             modelBuilder.Entity("Pathify.Models.TeamMember", b =>

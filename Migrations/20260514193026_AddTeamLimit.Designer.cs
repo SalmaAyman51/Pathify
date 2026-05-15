@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pathify.Models;
 
@@ -11,9 +12,11 @@ using Pathify.Models;
 namespace Pathify.Migrations
 {
     [DbContext(typeof(PathifyContext))]
-    partial class PathifyContextModelSnapshot : ModelSnapshot
+    [Migration("20260514193026_AddTeamLimit")]
+    partial class AddTeamLimit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -755,6 +758,12 @@ namespace Pathify.Migrations
                     b.Property<string>("LeaderSsn")
                         .IsRequired()
                         .HasColumnType("varchar(14)");
+
+                    b.Property<int>("MaxMembers")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MinMembers")
+                        .HasColumnType("int");
 
                     b.HasKey("TeamId");
 

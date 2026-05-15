@@ -131,7 +131,7 @@ namespace Pathify.Controllers
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
-                expires: DateTime.Now.AddHours(1),
+                expires: DateTime.Now.AddMinutes(15),
                 claims: claims,
                 signingCredentials: new SigningCredentials(
                     new SymmetricSecurityKey(

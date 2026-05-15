@@ -10,6 +10,7 @@ public partial class ExternalProfessor
     public string ExternalProfessorName { get; set; } = null!;
 
     public string DeptName { get; set; } = null!;
+    public string Email { get; set; } = null!;
 
     public virtual ICollection<ExternalProfessorPhone> ExternalProfessorPhones { get; set; } = new List<ExternalProfessorPhone>();
 
