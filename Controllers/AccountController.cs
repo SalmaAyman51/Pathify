@@ -95,7 +95,8 @@ namespace Pathify.Controllers
                 LevelId = dto.LevelId,
                 ProjectId = dto.ProjectId,
                 TeamId = dto.TeamId,
-                CurrentSemester=dto.CurrentSemester
+                CurrentSemester=dto.CurrentSemester,
+                PhoneNumber=dto.PhoneNumber
             };
 
             _context.TempStudentData.Add(tempStudent);
@@ -131,7 +132,7 @@ namespace Pathify.Controllers
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
-                expires: DateTime.Now.AddMinutes(15),
+                expires: DateTime.Now.AddHours(24),
                 claims: claims,
                 signingCredentials: new SigningCredentials(
                     new SymmetricSecurityKey(

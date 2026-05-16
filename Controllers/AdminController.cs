@@ -52,7 +52,8 @@ namespace Pathify.Controllers
                     t.BirthDate,
                     t.LevelId,
                     t.ProjectId,
-                    t.TeamId
+                    t.TeamId,
+                    t.PhoneNumber
                 })
                 .ToListAsync();
 
@@ -96,6 +97,7 @@ namespace Pathify.Controllers
                 LevelId = tempStudent.LevelId ?? 1,
                 TeamId = tempStudent.TeamId,
                 ProjectId = tempStudent.ProjectId,
+                PhoneNumber = tempStudent.PhoneNumber,
                 IsApproved = true
             };
 

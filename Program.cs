@@ -75,27 +75,47 @@ namespace Pathify
                 options.AddPolicy("UserPolicy", policy => policy.RequireRole("User"));
                 options.AddPolicy("ProfessorPolicy", policy => policy.RequireRole("Professor"));
             });
-    //        builder.Services.AddAuthentication()
-    //.AddJwtBearer(options =>
-    //{
-       
-    //    };
-    //});
+            //        builder.Services.AddAuthentication()
+            //.AddJwtBearer(options =>
+            //{
+
+            //    };
+            //});
+            // 1. تعريف السياسة
+          
+            
             builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
+            // قبل builder.Build()
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
+
+            //var app = builder.Build();
+           
+            // بعد builder.Build() وقبل app.Run()
 
             builder.Logging.ClearProviders();
             builder.Logging.AddConsole();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             // builder.Services.AddSwaggerGen();
+            //var app = builder.Build();
             var app = builder.Build();
-
+            app.UseCors("AllowAll");
+            // 2. تفعيل السياسة (لازم تكون قبل UseAuthorization)
+            //app.UseCors("PathifyPolicy");
             // Configure the HTTP request pipeline.
-           if (app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
             {
                // app.MapOpenApi();
                 app.UseSwagger();

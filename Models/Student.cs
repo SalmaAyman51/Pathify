@@ -35,11 +35,12 @@ public partial class Student
 
     public bool IsApproved { get; set; }
     public string? CurrentSemester { get; set; } = "first semester";
+    public string? PhoneNumber { get; set; }
     public virtual ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
 
     public virtual Project? Project { get; set; }
 
-    public virtual ICollection<StudentPhone> StudentPhones { get; set; } = new List<StudentPhone>();
+    //public virtual ICollection<StudentPhone> StudentPhones { get; set; } = new List<StudentPhone>();
 
     public virtual ICollection<Course> Courses { get; set; } = new List<Course>();
 }

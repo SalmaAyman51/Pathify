@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pathify.Models;
 
@@ -11,9 +12,11 @@ using Pathify.Models;
 namespace Pathify.Migrations
 {
     [DbContext(typeof(PathifyContext))]
-    partial class PathifyContextModelSnapshot : ModelSnapshot
+    [Migration("20260516115035_AddPhoneNumberNullable")]
+    partial class AddPhoneNumberNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -687,6 +690,25 @@ namespace Pathify.Migrations
                     b.ToTable("Students");
                 });
 
+            modelBuilder.Entity("Pathify.Models.StudentPhone", b =>
+                {
+                    b.Property<string>("StudentSsn")
+                        .HasMaxLength(14)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(14)")
+                        .HasColumnName("StudentSSN");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(15)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(15)");
+
+                    b.HasKey("StudentSsn", "PhoneNumber")
+                        .HasName("PK__student___2B11A60A9ECCBC2D");
+
+                    b.ToTable("student_phone", (string)null);
+                });
+
             modelBuilder.Entity("Pathify.Models.Supervisor", b =>
                 {
                     b.Property<int>("ProjectId")
@@ -1048,6 +1070,17 @@ namespace Pathify.Migrations
                     b.Navigation("Project");
                 });
 
+            modelBuilder.Entity("Pathify.Models.StudentPhone", b =>
+                {
+                    b.HasOne("Pathify.Models.Student", "StudentSsnNavigation")
+                        .WithMany("StudentPhones")
+                        .HasForeignKey("StudentSsn")
+                        .IsRequired()
+                        .HasConstraintName("FK_student_phone_Students");
+
+                    b.Navigation("StudentSsnNavigation");
+                });
+
             modelBuilder.Entity("Pathify.Models.Supervisor", b =>
                 {
                     b.HasOne("Pathify.Models.ExternalProfessor", "ExternalProfessorSsnNavigation")
@@ -1156,6 +1189,8 @@ namespace Pathify.Migrations
             modelBuilder.Entity("Pathify.Models.Student", b =>
                 {
                     b.Navigation("Enrollments");
+
+                    b.Navigation("StudentPhones");
                 });
 
             modelBuilder.Entity("Pathify.Models.Team", b =>

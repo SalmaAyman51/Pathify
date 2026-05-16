@@ -19,7 +19,7 @@
         public int? TeamId { get; set; }
 
         public int? ProjectId { get; set; }
-
+        public string? PhoneNumber { get; set; }
 
     }
 }

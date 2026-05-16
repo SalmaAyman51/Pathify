@@ -204,8 +204,9 @@ namespace Pathify.Controllers
             });
         }
 
-        [HttpPost("add-to-selected")]
-        public async Task<IActionResult> AddToSelected([FromBody] AddCoursesRequest request)
+        
+[HttpPost("add-to-selected")]
+public async Task<IActionResult> AddToSelected([FromBody] AddCoursesRequest request)
         {
             var studentSSN = User.FindFirstValue("SSN");
             if (studentSSN == null) return Unauthorized("Invalid token");
@@ -240,8 +241,18 @@ namespace Pathify.Controllers
                 .Select(e => e.CourseId)
                 .ToListAsync();
 
+            // جلب عدد المواد الاختيارية المختارة حالياً
+            var currentElectiveCount = await _context.SelectedCourses
+                .Where(s => s.StudentSsn == studentSSN)
+                .Join(_context.Courses,
+                    s => s.CourseId,
+                    c => c.CourseId,
+                    (s, c) => c)
+                .CountAsync(c => c.CourseType == "Elective");
+
             var addedCourses = new List<string>();
             var errors = new List<string>();
+            int electiveAddedInThisRequest = 0;
 
             foreach (var courseId in request.CourseIds)
             {
@@ -283,6 +294,17 @@ namespace Pathify.Controllers
                     continue;
                 }
 
+                // التحقق من المادة الاختيارية
+                if (course.CourseType == "Elective")
+                {
+                    if (currentElectiveCount + electiveAddedInThisRequest >= 1)
+                    {
+                        errors.Add($"{courseId}: You can only select one elective course per semester");
+                        continue;
+                    }
+                    electiveAddedInThisRequest++;
+                }
+
                 _context.SelectedCourses.Add(new SelectedCourse
                 {
                     StudentSsn = studentSSN,
@@ -304,6 +326,7 @@ namespace Pathify.Controllers
                 MaxAllowed = maxCourses
             });
         }
+
 
         // ✅ 3. شيل كورس من الـ Selected Courses
         [HttpDelete("remove-from-selected/{courseId}")]

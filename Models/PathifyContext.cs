@@ -40,7 +40,7 @@ public partial class PathifyContext : IdentityDbContext<ApplicationUser>
 
     public virtual DbSet<Student> Students { get; set; }
 
-    public virtual DbSet<StudentPhone> StudentPhones { get; set; }
+    
 
     public virtual DbSet<Supervisor> Supervisors { get; set; }
     public virtual DbSet<TempStudentData> TempStudentData { get; set; }
@@ -399,25 +399,25 @@ public partial class PathifyContext : IdentityDbContext<ApplicationUser>
                 .HasConstraintName("FK_SelectedCourses_Course");
         });
 
-        modelBuilder.Entity<StudentPhone>(entity =>
-        {
-            entity.HasKey(e => new { e.StudentSsn, e.PhoneNumber }).HasName("PK__student___2B11A60A9ECCBC2D");
+        //modelBuilder.Entity<StudentPhone>(entity =>
+        //{
+        //    entity.HasKey(e => new { e.StudentSsn, e.PhoneNumber }).HasName("PK__student___2B11A60A9ECCBC2D");
 
-            entity.ToTable("student_phone");
+        //    entity.ToTable("student_phone");
 
-            entity.Property(e => e.StudentSsn)
-                .HasMaxLength(14)
-                .IsUnicode(false)
-                .HasColumnName("StudentSSN");
-            entity.Property(e => e.PhoneNumber)
-                .HasMaxLength(15)
-                .IsUnicode(false);
+        //    entity.Property(e => e.StudentSsn)
+        //        .HasMaxLength(14)
+        //        .IsUnicode(false)
+        //        .HasColumnName("StudentSSN");
+        //    entity.Property(e => e.PhoneNumber)
+        //        .HasMaxLength(15)
+        //        .IsUnicode(false);
 
-            entity.HasOne(d => d.StudentSsnNavigation).WithMany(p => p.StudentPhones)
-                .HasForeignKey(d => d.StudentSsn)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_student_phone_Students");
-        });
+        //    entity.HasOne(d => d.StudentSsnNavigation).WithMany(p => p.StudentPhones)
+        //        .HasForeignKey(d => d.StudentSsn)
+        //        .OnDelete(DeleteBehavior.ClientSetNull)
+        //        .HasConstraintName("FK_student_phone_Students");
+        //});
 
 
 
