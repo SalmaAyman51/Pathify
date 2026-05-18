@@ -188,6 +188,30 @@ namespace Pathify.Controllers
             await _context.SaveChangesAsync();
             return Ok(new { message = "Edit is done" });
         }
+        [HttpGet("get-student/{SSN}")]
+        public async Task<ActionResult> GetStudent(string SSN)
+        {
+            var student = await _context.Students.FindAsync(SSN);
+            if (student == null) return NotFound("Student not Found");
+
+            return Ok(new
+            {
+                student.StudentSsn,
+                student.StudentId,
+                student.Fname,
+                student.Lname,
+                student.FullName,
+                student.Email,
+                student.Gpa,
+                student.AcademicLevel,
+                student.LevelId,
+                student.Gender,
+                student.BirthDate,
+                student.EnrollmentYear,
+                student.TeamId,
+                student.ProjectId,
+            });
+        }
         [HttpDelete("delete-student/{SSN}")]
         public async Task<ActionResult> DeleteStudent(string SSN)
         {
@@ -347,14 +371,14 @@ namespace Pathify.Controllers
                 Id = i.InternalProfessorSsn,
                 Name = i.InternalProfessorName,
                 Dept = i.DeptName,
-                Phone = i.InternalProfessorPhones.FirstOrDefault()?.PhoneNumber ?? "N/A"
-
+                Phone = i.InternalProfessorPhones.FirstOrDefault()?.PhoneNumber ?? "N/A",
+                Type = "Internal"   // ← ضيف دي
             }).Concat(externals.Select(e => new {
                 Id = e.ExternalProfessorSsn,
                 Name = e.ExternalProfessorName,
-                Dept = e.DeptName ?? "External",
-                Phone = e.ExternalProfessorPhones.FirstOrDefault()?.PhoneNumber ?? "N/A"
-
+                Dept = e.DeptName ?? "",
+                Phone = e.ExternalProfessorPhones.FirstOrDefault()?.PhoneNumber ?? "N/A",
+                Type = "External"   // ← وضيف دي
             }));
 
             return Ok(combined);
@@ -570,6 +594,25 @@ namespace Pathify.Controllers
             await _context.SaveChangesAsync();
             return Ok(new { message = "Course deleted successfully" });
         }
+        [HttpGet("get-course/{courseId}")]
+        public async Task<ActionResult> GetCourse(string courseId)
+        {
+            var course = await _context.Courses.FindAsync(courseId);
+            if (course == null) return NotFound("Course not found");
+
+            return Ok(new
+            {
+                course.CourseId,
+                course.CourseName,
+                course.CourseSemester,
+                course.DepartmentName,
+                course.AdminSsn,
+                course.CourseLevel,
+                course.PreReqCourseId,
+                course.CreditHours,
+                course.CourseType,
+            });
+        }
         [HttpGet("get-all-courses")]
         public async Task<ActionResult> GetAllCourses()
         {
@@ -580,7 +623,8 @@ namespace Pathify.Controllers
                     c.CourseName,
                     c.CourseSemester,                  
                     c.CourseLevel,                  
-                    c.PreReqCourseId
+                    c.PreReqCourseId,
+                    c.CourseType
                 })
                 .ToListAsync();
 

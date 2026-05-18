@@ -420,6 +420,28 @@
         }
       }
     },
+    "/api/Admin/get-student/{SSN}": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "name": "SSN",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Admin/delete-student/{SSN}": {
       "delete": {
         "tags": [
@@ -672,6 +694,28 @@
     },
     "/api/Admin/delete-course/{courseId}": {
       "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "name": "courseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Admin/get-course/{courseId}": {
+      "get": {
         "tags": [
           "Admin"
         ],

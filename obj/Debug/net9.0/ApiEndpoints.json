@@ -438,12 +438,44 @@
   },
   {
     "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "GetCourse",
+    "RelativePath": "api/Admin/get-course/{courseId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "courseId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
     "Method": "GetProfessorsCount",
     "RelativePath": "api/Admin/get-professors-count",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "GetStudent",
+    "RelativePath": "api/Admin/get-student/{SSN}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "SSN",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
