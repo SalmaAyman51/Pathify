@@ -6,6 +6,8 @@ namespace Pathify.Models
     {
         public bool IsApproved { get; set; } = false;
         public string? SSN { get; set; }
+        // ✅ Navigation Property العكسية
+        public TempStudentData? TempStudentData { get; set; }
 
     }
 }

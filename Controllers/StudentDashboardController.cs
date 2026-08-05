@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pathify.Models;
@@ -21,18 +22,19 @@ namespace Pathify.Controllers
             var count = await _context.Enrollments
                 .Where(e => e.StudentSsn != null &&
                             e.StudentSsn.Trim() == ssn.Trim() &&
-                            e.Passed == true)
+                            e.Passed == PassStatus.Passed)
                 .CountAsync();
 
             return Ok(count);
         }
+
         [HttpGet("completed-credits/{ssn}")]
         public async Task<IActionResult> GetCompletedCredits(string ssn)
         {
             var totalCredits = await _context.Enrollments
                 .Include(e => e.Course)
                 .Where(e => e.StudentSsn.Trim() == ssn.Trim()
-                            && e.Passed == true) 
+                            && e.Passed == PassStatus.Passed)
                 .SumAsync(e => e.Course.CreditHours);
 
             return Ok(new
@@ -70,6 +72,6 @@ namespace Pathify.Controllers
 
             return Ok(courses);
         }
-
+       
     }
     }

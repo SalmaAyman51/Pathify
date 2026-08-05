@@ -48,6 +48,9 @@ public partial class PathifyContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<Team> Teams { get; set; }
     public virtual DbSet<TeamMember> TeamMembers { get; set; }
     public virtual DbSet<TeamLimit> TeamLimits { get; set; }
+    public virtual DbSet<ProjectProposal> ProjectProposals { get; set; }
+    public DbSet<PastYearsProjects> PastYearsProjects { get; set; }
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -189,7 +192,10 @@ public partial class PathifyContext : IdentityDbContext<ApplicationUser>
                 .IsUnicode(false)
                 .HasColumnName("AdminSSN");
             entity.Property(e => e.EnrollmentDate).HasColumnName("Enrollment_Date");
-            entity.Property(e => e.Passed).HasColumnName("passed");
+            entity.Property(e => e.Passed)
+                .HasColumnName("passed")
+                .HasConversion<int>()
+                .HasDefaultValue(PassStatus.Pending);
 
             entity.HasOne(d => d.AdminSsnNavigation).WithMany(p => p.Enrollments)
                 .HasForeignKey(d => d.AdminSsn)
@@ -457,6 +463,51 @@ public partial class PathifyContext : IdentityDbContext<ApplicationUser>
                 .HasConstraintName("FK_supervisors_project_team");
         });
 
+        modelBuilder.Entity<ProjectProposal>(entity =>
+        {
+            entity.HasKey(e => e.ProposalId);
+
+            entity.Property(e => e.ProjectName).HasMaxLength(200);
+            entity.Property(e => e.ProjectDescription).HasMaxLength(2000);
+            entity.Property(e => e.Status).HasMaxLength(20);
+            entity.Property(e => e.RejectionReason).HasMaxLength(500);
+
+            entity.HasOne(p => p.Team)
+                .WithMany() // لو عايزة Team.Proposals navigation هنضيفها برضه
+                .HasForeignKey(p => p.TeamId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+        modelBuilder.Entity<Team>(entity =>
+        {
+            entity.HasOne(t => t.InternalProfessorSsnNavigation)
+                .WithMany()
+                .HasForeignKey(t => t.InternalProfessorSsn)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasOne(t => t.ExternalProfessorSsnNavigation)
+                .WithMany()
+                .HasForeignKey(t => t.ExternalProfessorSsn)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+        modelBuilder.Entity<Team>(entity =>
+        {
+            entity.Property(e => e.InternalProfessorSsn)
+                .HasColumnName("internal_professor_SSN");
+
+            entity.Property(e => e.ExternalProfessorSsn)
+                .HasColumnName("external_professor_SSN");
+        });
+        //base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<Project>(entity =>
+        {
+            entity.Property(e => e.ProjectId)
+                  .ValueGeneratedOnAdd(); // ده بيقول لـ EF إن الـ DB هي اللي بتولد القيمة
+        });
+        modelBuilder.Entity<TempStudentData>()
+     .HasOne(t => t.User)
+     .WithOne(u => u.TempStudentData)   // ✅ كده بقى
+     .HasForeignKey<TempStudentData>(t => t.UserId)
+     .OnDelete(DeleteBehavior.SetNull);
         modelBuilder.Entity<TempStudentData>(entity =>
         {
             entity.HasKey(e => e.SSN);
@@ -466,6 +517,7 @@ public partial class PathifyContext : IdentityDbContext<ApplicationUser>
         });
         OnModelCreatingPartial(modelBuilder);
     }
+
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 

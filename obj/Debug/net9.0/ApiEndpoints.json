@@ -34,13 +34,13 @@
   {
     "ContainingType": "Pathify.Controllers.AccountController",
     "Method": "ApproveUser",
-    "RelativePath": "api/Account/approve-user/{email}",
+    "RelativePath": "api/Account/approve-user/{ssn}",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "email",
+        "Name": "ssn",
         "Type": "System.String",
         "IsRequired": true
       }
@@ -67,6 +67,16 @@
     "ContainingType": "Pathify.Controllers.AccountController",
     "Method": "CreateAdmin",
     "RelativePath": "api/Account/create-admin",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AccountController",
+    "Method": "SeedSuperAdmin",
+    "RelativePath": "api/Account/create-superadmin",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -125,7 +135,23 @@
     "Parameters": [
       {
         "Name": "dto",
-        "Type": "Pathify.DTOs.RegisterDTO\u002BRegisterDto",
+        "Type": "Pathify.DTOs.RegisterDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AccountController",
+    "Method": "RegisterProfessor",
+    "RelativePath": "api/Account/register-professor",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "Pathify.DTOs.RegisterProfessorDto",
         "IsRequired": true
       }
     ],
@@ -199,7 +225,7 @@
     "Parameters": [
       {
         "Name": "model",
-        "Type": "Pathify.DTOs.CreateProfessorDTO\u002BCreateExternalProfessorDTO",
+        "Type": "Pathify.DTOs.CreateExternalProfessorDTO",
         "IsRequired": true
       }
     ],
@@ -215,7 +241,7 @@
     "Parameters": [
       {
         "Name": "model",
-        "Type": "Pathify.DTOs.CreateProfessorDTO\u002BCreateInternalProfessorDTO",
+        "Type": "Pathify.DTOs.CreateInternalProfessorDTO",
         "IsRequired": true
       }
     ],
@@ -268,22 +294,6 @@
       {
         "Name": "updatedProf",
         "Type": "Pathify.DTOs.UpdateProfessorsDTO\u002BUpdateInternalProfessorDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "Pathify.Controllers.AdminController",
-    "Method": "ApproveTeam",
-    "RelativePath": "api/Admin/approve-team/{teamId}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "teamId",
-        "Type": "System.Int32",
         "IsRequired": true
       }
     ],
@@ -402,6 +412,16 @@
   },
   {
     "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "GetActiveCoursesCount",
+    "RelativePath": "api/Admin/get-active-courses-count",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
     "Method": "GetAllCourses",
     "RelativePath": "api/Admin/get-all-courses",
     "HttpMethod": "GET",
@@ -454,6 +474,16 @@
   },
   {
     "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "GetPendingApprovalsCount",
+    "RelativePath": "api/Admin/get-pending-approvals-count",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
     "Method": "GetProfessorsCount",
     "RelativePath": "api/Admin/get-professors-count",
     "HttpMethod": "GET",
@@ -490,8 +520,108 @@
   },
   {
     "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "ImportProfessors",
+    "RelativePath": "api/Admin/import-professors",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "file",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "ImportResults",
+    "RelativePath": "api/Admin/import-results",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "file",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "ImportStudents",
+    "RelativePath": "api/Admin/import-students",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "file",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "UploadPastYearsProjects",
+    "RelativePath": "api/Admin/past-projects/upload",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "file",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
     "Method": "GetPendingApprovals",
     "RelativePath": "api/Admin/pending-approvals",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "GetProfile",
+    "RelativePath": "api/Admin/Profile",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "UpdateProfile",
+    "RelativePath": "api/Admin/Profile",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "Pathify.DTOs.UpdateAdminProfileDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "GetRecentEnrollment",
+    "RelativePath": "api/Admin/recent-enrollment",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -597,6 +727,16 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.AdminController",
+    "Method": "GetSystemHealth",
+    "RelativePath": "api/Admin/system-health",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -719,6 +859,260 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "Pathify.Controllers.ProfessorController",
+    "Method": "GetAllProjects",
+    "RelativePath": "api/Professor/all-projects",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProfessorController",
+    "Method": "GetExternalPendingProposals",
+    "RelativePath": "api/Professor/external/pending-proposals",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProfessorController",
+    "Method": "GetPendingProposalsCountExternal",
+    "RelativePath": "api/Professor/external/pending-proposals-count",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProfessorController",
+    "Method": "GetExternalSupervisedTeams",
+    "RelativePath": "api/Professor/external/supervised-teams",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProfessorController",
+    "Method": "GetSupervisedTeamsCountExternal",
+    "RelativePath": "api/Professor/external/supervised-teams-count",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProfessorController",
+    "Method": "GetInternalPendingProposals",
+    "RelativePath": "api/Professor/internal/pending-proposals",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProfessorController",
+    "Method": "GetPendingProposalsCount",
+    "RelativePath": "api/Professor/internal/pending-proposals-count",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProfessorController",
+    "Method": "GetInternalSupervisedTeams",
+    "RelativePath": "api/Professor/internal/supervised-teams",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProfessorController",
+    "Method": "GetSupervisedTeamsCount",
+    "RelativePath": "api/Professor/internal/supervised-teams-count",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProfessorController",
+    "Method": "GetCurrentProfessor",
+    "RelativePath": "api/Professor/me",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProfessorController",
+    "Method": "GetProfessorProfile",
+    "RelativePath": "api/Professor/profile",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProfessorController",
+    "Method": "UpdateProfessorProfile",
+    "RelativePath": "api/Professor/profile",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "Pathify.DTOs.UpdateProfessorProfileDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProfessorController",
+    "Method": "ReviewProposalExternal",
+    "RelativePath": "api/Professor/review-proposal-external/{proposalId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "proposalId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "Pathify.DTOs.ReviewDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProfessorController",
+    "Method": "ReviewProposalInternal",
+    "RelativePath": "api/Professor/review-proposal-internal/{proposalId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "proposalId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "Pathify.DTOs.ReviewDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProjectManagementController",
+    "Method": "GetMyInfo",
+    "RelativePath": "api/ProjectManagement/my-info",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProjectManagementController",
+    "Method": "GetMyProposal",
+    "RelativePath": "api/ProjectManagement/my-proposal",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProjectManagementController",
+    "Method": "GetMyStatus",
+    "RelativePath": "api/ProjectManagement/my-status",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProjectManagementController",
+    "Method": "GetMySupervisors",
+    "RelativePath": "api/ProjectManagement/my-supervisors",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProjectManagementController",
+    "Method": "GetStudentName",
+    "RelativePath": "api/ProjectManagement/name",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProjectManagementController",
+    "Method": "GetPastYearsProjects",
+    "RelativePath": "api/ProjectManagement/past-projects",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProjectManagementController",
+    "Method": "GetStudentProfile",
+    "RelativePath": "api/ProjectManagement/profile",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProjectManagementController",
+    "Method": "UpdateStudentProfile",
+    "RelativePath": "api/ProjectManagement/profile",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "Pathify.DTOs.UpdateStudentProfileDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Pathify.Controllers.ProjectManagementController",
     "Method": "RegisterTeam",
     "RelativePath": "api/ProjectManagement/register-team",
@@ -732,6 +1126,42 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProjectManagementController",
+    "Method": "ResubmitProposal",
+    "RelativePath": "api/ProjectManagement/resubmit-proposal",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProjectManagementController",
+    "Method": "SubmitProposal",
+    "RelativePath": "api/ProjectManagement/submit-proposal",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "Pathify.DTOs.SubmitProposalDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.ProjectManagementController",
+    "Method": "GetTeamLimit",
+    "RelativePath": "api/ProjectManagement/team-limit",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -780,6 +1210,155 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.SuperAdminController",
+    "Method": "GetApprovedProjects",
+    "RelativePath": "api/SuperAdmin/approved-projects",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.SuperAdminController",
+    "Method": "AssignProfessors",
+    "RelativePath": "api/SuperAdmin/assign-professors",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "Pathify.DTOs.AssignProfessorsDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.SuperAdminController",
+    "Method": "GetExternalProfessors",
+    "RelativePath": "api/SuperAdmin/external-professors",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.SuperAdminController",
+    "Method": "FinalApproveProposal",
+    "RelativePath": "api/SuperAdmin/final-approve-proposal/{proposalId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "proposalId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.SuperAdminController",
+    "Method": "FinalRejectProposal",
+    "RelativePath": "api/SuperAdmin/final-reject-proposal/{proposalId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "proposalId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "Pathify.DTOs.ReviewDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.SuperAdminController",
+    "Method": "GetInternalProfessors",
+    "RelativePath": "api/SuperAdmin/internal-professors",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.SuperAdminController",
+    "Method": "GetPendingProjectsCount",
+    "RelativePath": "api/SuperAdmin/pending-projects-count",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.SuperAdminController",
+    "Method": "GetPendingProposals",
+    "RelativePath": "api/SuperAdmin/pending-proposals",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.SuperAdminController",
+    "Method": "GetPendingTeamsCount",
+    "RelativePath": "api/SuperAdmin/pending-teams-count",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.SuperAdminController",
+    "Method": "SetTeamLimit",
+    "RelativePath": "api/SuperAdmin/team-limit",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "Pathify.DTOs.TeamLimitDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.SuperAdminController",
+    "Method": "GetTeamsWithoutProfessors",
+    "RelativePath": "api/SuperAdmin/teams-without-professors",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Pathify.Controllers.SuperAdminController",
+    "Method": "GetTotalProjectsCount",
+    "RelativePath": "api/SuperAdmin/total-projects-count",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Pathify.DTOs;
 using Pathify.Models;
 using System.Security.Claims;
 using static Pathify.DTOs.AddCourseRequestDTO;
@@ -22,133 +23,6 @@ namespace Pathify.Controllers
         }
 
         [Authorize(Roles = "Student")]
-        //   [HttpGet("available-courses")]
-        //   public async Task<IActionResult> GetAvailableCourses()
-        //   {
-        //       var studentSSN = User.FindFirstValue("SSN");
-        //       if (studentSSN == null)
-        //           return Unauthorized("Invalid token");
-
-        //       var student = await _context.Students
-        //           .FirstOrDefaultAsync(s => s.StudentSsn == studentSSN);
-
-        //       if (student == null)
-        //           return NotFound("Student not found");
-
-        //       var passedCourses = await _context.Enrollments
-        //           .Where(e => e.StudentSsn == studentSSN && e.Passed == true)
-        //           .Select(e => e.CourseId)
-        //           .ToListAsync();
-
-
-        //       var currentYear = DateTime.Now.Year;
-        //       var enrolledThisYear = await _context.Enrollments
-        //.Where(e => e.StudentSsn == studentSSN &&
-        //            e.Passed == null &&
-        //            e.EnrollmentDate.HasValue &&
-        //            e.EnrollmentDate.Value.Year == currentYear)
-        //.Select(e => e.CourseId)
-        //.ToListAsync();
-
-        //       string currentSemester = (student.CurrentSemester ?? "first semester").ToLower();
-        //       int currentLevel = student.LevelId ?? 1;
-
-        //       int maxCourses;
-        //       if (currentLevel == 1 || student.Gpa == 0 || student.Gpa == null)
-        //           maxCourses = 6;
-        //       else if (student.Gpa >= 2)
-        //           maxCourses = 6;
-        //       else
-        //           maxCourses = 4;
-
-        //       var allCourses = await _context.Courses.ToListAsync();
-        //       var currentLevelCourses = allCourses
-        //           .Where(c =>
-        //               c.CourseLevel == currentLevel &&
-        //               c.CourseSemester.ToLower() == currentSemester &&
-        //               !passedCourses.Contains(c.CourseId) &&
-        //               !enrolledThisYear.Contains(c.CourseId) &&
-        //               (string.IsNullOrEmpty(c.PreReqCourseId) ||
-        //                passedCourses.Contains(c.PreReqCourseId))
-        //           )
-        //           .Select(c => new
-        //           {
-        //               c.CourseId,
-        //               c.CourseName,
-        //               c.CourseLevel,
-        //               c.CourseSemester,
-        //               c.CreditHours,
-        //               c.DepartmentName,
-        //               c.CourseType,
-        //               PreRequisite = c.PreReqCourseId,
-        //               HasPrerequisite = !string.IsNullOrEmpty(c.PreReqCourseId),
-        //               Source = "Current Level"
-        //           });
-
-        //       var higherLevelCourses = allCourses
-        //           .Where(c =>
-        //               c.CourseLevel > currentLevel &&
-        //               c.CourseSemester.ToLower() == currentSemester &&
-        //               !passedCourses.Contains(c.CourseId) &&
-        //               !enrolledThisYear.Contains(c.CourseId) && 
-        //               (string.IsNullOrEmpty(c.PreReqCourseId) ||
-        //                passedCourses.Contains(c.PreReqCourseId))
-        //           )
-        //           .Select(c => new
-        //           {
-        //               c.CourseId,
-        //               c.CourseName,
-        //               c.CourseLevel,
-        //               c.CourseSemester,
-        //               c.CreditHours,
-        //               c.DepartmentName,
-        //               c.CourseType,
-        //               PreRequisite = c.PreReqCourseId,
-        //               HasPrerequisite = !string.IsNullOrEmpty(c.PreReqCourseId),
-        //               Source = "Higher Level"
-        //           });
-
-        //       var lowerLevelCourses = allCourses
-        //           .Where(c =>
-        //               c.CourseLevel < currentLevel &&
-        //               c.CourseSemester.ToLower() == currentSemester &&
-        //               !passedCourses.Contains(c.CourseId) &&
-        //               !enrolledThisYear.Contains(c.CourseId) && // 👈 المهم
-        //               (string.IsNullOrEmpty(c.PreReqCourseId) ||
-        //                passedCourses.Contains(c.PreReqCourseId))
-        //           )
-        //           .Select(c => new
-        //           {
-        //               c.CourseId,
-        //               c.CourseName,
-        //               c.CourseLevel,
-        //               c.CourseSemester,
-        //               c.CreditHours,
-        //               c.DepartmentName,
-        //               c.CourseType,
-        //               PreRequisite = c.PreReqCourseId,
-        //               HasPrerequisite = !string.IsNullOrEmpty(c.PreReqCourseId),
-        //               Source = "Lower Level (Not Passed)"
-        //           });
-
-        //       var result = currentLevelCourses
-        //           .Concat(higherLevelCourses)
-        //           .Concat(lowerLevelCourses)
-        //           .OrderBy(c => c.CourseLevel)
-        //           .ThenBy(c => c.CourseName)
-        //           .ToList();
-
-        //       return Ok(new
-        //       {
-        //           StudentName = student.FullName,
-        //           CurrentLevel = currentLevel,
-        //           CurrentSemester = currentSemester,
-        //           GPA = student.Gpa,
-        //           MaxCoursesAllowed = maxCourses,
-        //           TotalAvailableCourses = result.Count,
-        //           AvailableCourses = result
-        //       });
-        //   }
         [HttpGet("available-courses")]
         public async Task<IActionResult> GetAvailableCourses()
         {
@@ -163,7 +37,7 @@ namespace Pathify.Controllers
                 return NotFound("Student not found");
 
             var passedCourses = await _context.Enrollments
-                .Where(e => e.StudentSsn == studentSSN && e.Passed == true)
+                .Where(e => e.StudentSsn == studentSSN && e.Passed == PassStatus.Passed)
                 .Select(e => e.CourseId)
                 .ToListAsync();
 
@@ -173,7 +47,7 @@ namespace Pathify.Controllers
             var currentYear = DateTime.Now.Year;
             var enrolledThisYear = await _context.Enrollments
                 .Where(e => e.StudentSsn == studentSSN &&
-                            e.Passed == null &&
+                            e.Passed == PassStatus.Pending &&
                             e.EnrollmentDate.HasValue &&
                             e.EnrollmentDate.Value.Year == currentYear)
                 .Select(e => e.CourseId)
@@ -338,9 +212,9 @@ namespace Pathify.Controllers
             });
         }
 
-        
-[HttpPost("add-to-selected")]
-public async Task<IActionResult> AddToSelected([FromBody] AddCoursesRequest request)
+
+        [HttpPost("add-to-selected")]
+        public async Task<IActionResult> AddToSelected([FromBody] AddCoursesRequest request)
         {
             var studentSSN = User.FindFirstValue("SSN");
             if (studentSSN == null) return Unauthorized("Invalid token");
@@ -371,7 +245,7 @@ public async Task<IActionResult> AddToSelected([FromBody] AddCoursesRequest requ
                 return BadRequest($"You can only add {remainingSlots} more courses");
 
             var passedCourses = await _context.Enrollments
-                .Where(e => e.StudentSsn == studentSSN && e.Passed == true)
+                .Where(e => e.StudentSsn == studentSSN && e.Passed == PassStatus.Passed)
                 .Select(e => e.CourseId)
                 .ToListAsync();
 
@@ -405,7 +279,7 @@ public async Task<IActionResult> AddToSelected([FromBody] AddCoursesRequest requ
                 }
 
                 var alreadyPassed = await _context.Enrollments
-                    .AnyAsync(e => e.StudentSsn == studentSSN && e.CourseId == courseId && e.Passed == true);
+                    .AnyAsync(e => e.StudentSsn == studentSSN && e.CourseId == courseId && e.Passed == PassStatus.Passed);
                 if (alreadyPassed)
                 {
                     errors.Add($"{courseId}: Already passed");
@@ -413,7 +287,7 @@ public async Task<IActionResult> AddToSelected([FromBody] AddCoursesRequest requ
                 }
 
                 var alreadyEnrolled = await _context.Enrollments
-                    .AnyAsync(e => e.StudentSsn == studentSSN && e.CourseId == courseId && e.Passed == null);
+                    .AnyAsync(e => e.StudentSsn == studentSSN && e.CourseId == courseId && e.Passed == PassStatus.Pending);
                 if (alreadyEnrolled)
                 {
                     errors.Add($"{courseId}: Already enrolled");
@@ -477,80 +351,6 @@ public async Task<IActionResult> AddToSelected([FromBody] AddCoursesRequest requ
             return Ok(new { Message = "Course removed from selected list successfully" });
         }
 
-
-        //[HttpPost("confirm-enrollment")]
-        //public async Task<IActionResult> ConfirmEnrollment()
-        //{
-        //    var studentSSN = User.FindFirstValue("SSN");
-        //    if (studentSSN == null) return Unauthorized("Invalid token");
-
-        //    var student = await _context.Students
-        //        .FirstOrDefaultAsync(s => s.StudentSsn == studentSSN);
-        //    if (student == null) return NotFound("Student not found");
-
-        //    var selectedCourses = await _context.SelectedCourses
-        //        .Where(s => s.StudentSsn == studentSSN)
-        //        .ToListAsync();
-
-        //    if (!selectedCourses.Any())
-        //        return BadRequest("No courses in your selected list to confirm");
-
-        //    int currentLevel = student.LevelId ?? 1;
-        //    int maxCourses = (currentLevel == 1 || student.Gpa == 0 || student.Gpa == null || student.Gpa >= 2) ? 6 : 4;
-
-        //    if (selectedCourses.Count > maxCourses)
-        //        return BadRequest(new
-        //        {
-        //            Message = $"You can only enroll in {maxCourses} courses",
-        //            MaxAllowed = maxCourses,
-        //            YouSelected = selectedCourses.Count
-        //        });
-
-        //    var enrolledList = new List<string>();
-        //    var errors = new List<string>();
-        //    var successfullySelected = new List<SelectedCourse>();
-
-        //    foreach (var selected in selectedCourses)
-        //    {
-        //        var alreadyEnrolled = await _context.Enrollments
-        //            .AnyAsync(e => e.StudentSsn == studentSSN &&
-        //                           e.CourseId == selected.CourseId &&
-        //                           e.Passed == null);
-
-        //        if (alreadyEnrolled)
-        //        {
-        //            errors.Add($"{selected.CourseId} - Already enrolled");
-        //            continue;
-        //        }
-
-        //        var enrollment = new Enrollment
-        //        {
-        //            CourseId = selected.CourseId,
-        //            StudentSsn = studentSSN,
-        //            EnrollmentDate = DateOnly.FromDateTime(DateTime.Now),
-        //            Passed = null
-        //        };
-
-        //        _context.Enrollments.Add(enrollment);
-
-        //        enrolledList.Add(selected.CourseId);
-        //        successfullySelected.Add(selected);
-        //    }
-
-
-        //   _context.SelectedCourses.RemoveRange(successfullySelected);
-
-        //    await _context.SaveChangesAsync();
-
-        //    return Ok(new
-        //    {
-        //        Message = "Enrollment confirmed successfully",
-        //        StudentName = student.FullName,
-        //        EnrolledCourses = enrolledList,
-        //        Errors = errors
-        //    });
-        //}
-
         [HttpPost("confirm-enrollment")]
         public async Task<IActionResult> ConfirmEnrollment()
         {
@@ -599,7 +399,7 @@ public async Task<IActionResult> AddToSelected([FromBody] AddCoursesRequest requ
                     CourseId = selected.CourseId,
                     StudentSsn = studentSSN,
                     EnrollmentDate = DateOnly.FromDateTime(DateTime.Now),
-                    Passed = null
+                    Passed = PassStatus.Pending
                 });
 
                 enrolledList.Add(selected.CourseId);
@@ -617,6 +417,7 @@ public async Task<IActionResult> AddToSelected([FromBody] AddCoursesRequest requ
                 Errors = errors
             });
         }
+
         [Authorize(Roles = "Student")]
         [HttpGet("my-enrolled-courses")]
         public async Task<IActionResult> GetMyEnrolledCourses()
@@ -639,15 +440,15 @@ public async Task<IActionResult> AddToSelected([FromBody] AddCoursesRequest requ
                     CreditHours = e.Course.CreditHours,
                     EnrollmentDate = e.EnrollmentDate,
                     Passed = e.Passed,
-                    DepartmentName= e.Course.DepartmentName
+                    DepartmentName = e.Course.DepartmentName
                 })
                 .OrderBy(c => c.CourseLevel)
                 .ThenBy(c => c.CourseName)
                 .ToListAsync();
 
             var totalCourses = enrolledCourses.Count;
-            var passedCourses = enrolledCourses.Count(c => c.Passed == true);
-            var failedCourses = enrolledCourses.Count(c => c.Passed == false);
+            var passedCourses = enrolledCourses.Count(c => c.Passed == PassStatus.Passed);
+            var failedCourses = enrolledCourses.Count(c => c.Passed == PassStatus.Failed);
 
             return Ok(new
             {

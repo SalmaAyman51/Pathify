@@ -391,8 +391,10 @@ namespace Pathify.Migrations
                         .HasColumnType("date")
                         .HasColumnName("Enrollment_Date");
 
-                    b.Property<bool?>("Passed")
-                        .HasColumnType("bit")
+                    b.Property<int>("Passed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0)
                         .HasColumnName("passed");
 
                     b.HasKey("CourseId", "StudentSsn")
@@ -529,11 +531,40 @@ namespace Pathify.Migrations
                     b.ToTable("Levels");
                 });
 
+            modelBuilder.Entity("Pathify.Models.PastYearsProjects", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PastYearsProjects");
+                });
+
             modelBuilder.Entity("Pathify.Models.Project", b =>
                 {
                     b.Property<int>("ProjectId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("project_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProjectId"));
 
                     b.Property<string>("ExternalProfessorSsn")
                         .IsRequired()
@@ -733,14 +764,23 @@ namespace Pathify.Migrations
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsApproved")
-                        .HasColumnType("bit");
+                    b.Property<string>("ExternalProfessorSsn")
+                        .HasColumnType("varchar(14)")
+                        .HasColumnName("external_professor_SSN");
+
+                    b.Property<string>("InternalProfessorSsn")
+                        .HasColumnType("varchar(14)")
+                        .HasColumnName("internal_professor_SSN");
 
                     b.Property<string>("LeaderSsn")
                         .IsRequired()
                         .HasColumnType("varchar(14)");
 
                     b.HasKey("TeamId");
+
+                    b.HasIndex("ExternalProfessorSsn");
+
+                    b.HasIndex("InternalProfessorSsn");
 
                     b.HasIndex("LeaderSsn");
 
@@ -794,36 +834,43 @@ namespace Pathify.Migrations
                         .HasColumnType("nvarchar(14)");
 
                     b.Property<string>("AcademicLevel")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CurrentSemester")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("EnrollmentYear")
                         .HasColumnType("int");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("GPA")
                         .HasColumnType("float");
 
                     b.Property<string>("Gender")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("LevelId")
                         .HasColumnType("int");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ProjectId")
@@ -837,9 +884,76 @@ namespace Pathify.Migrations
                         .HasColumnType("int")
                         .HasColumnName("team_id");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("SSN");
 
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
+
                     b.ToTable("TempStudentData");
+                });
+
+            modelBuilder.Entity("ProjectProposal", b =>
+                {
+                    b.Property<int>("ProposalId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProposalId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ExternalApproval")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ExternalRejectionReason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InternalApproval")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InternalRejectionReason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProjectDescription")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("ProjectName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("RejectedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RejectionReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("ReviewedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("TeamId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProposalId");
+
+                    b.HasIndex("TeamId");
+
+                    b.ToTable("ProjectProposals");
                 });
 
             modelBuilder.Entity("CourseStudent", b =>
@@ -1077,11 +1191,25 @@ namespace Pathify.Migrations
 
             modelBuilder.Entity("Pathify.Models.Team", b =>
                 {
+                    b.HasOne("Pathify.Models.ExternalProfessor", "ExternalProfessorSsnNavigation")
+                        .WithMany()
+                        .HasForeignKey("ExternalProfessorSsn")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Pathify.Models.InternalProfessor", "InternalProfessorSsnNavigation")
+                        .WithMany()
+                        .HasForeignKey("InternalProfessorSsn")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("Pathify.Models.Student", "Leader")
                         .WithMany()
                         .HasForeignKey("LeaderSsn")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ExternalProfessorSsnNavigation");
+
+                    b.Navigation("InternalProfessorSsnNavigation");
 
                     b.Navigation("Leader");
                 });
@@ -1105,6 +1233,27 @@ namespace Pathify.Migrations
                     b.Navigation("Team");
                 });
 
+            modelBuilder.Entity("Pathify.Models.TempStudentData", b =>
+                {
+                    b.HasOne("Pathify.Models.ApplicationUser", "User")
+                        .WithOne("TempStudentData")
+                        .HasForeignKey("Pathify.Models.TempStudentData", "UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ProjectProposal", b =>
+                {
+                    b.HasOne("Pathify.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Team");
+                });
+
             modelBuilder.Entity("Pathify.Models.Adminstration", b =>
                 {
                     b.Navigation("AdminPhones");
@@ -1114,6 +1263,11 @@ namespace Pathify.Migrations
                     b.Navigation("Enrollments");
 
                     b.Navigation("InverseManagerSsnNavigation");
+                });
+
+            modelBuilder.Entity("Pathify.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("TempStudentData");
                 });
 
             modelBuilder.Entity("Pathify.Models.Course", b =>

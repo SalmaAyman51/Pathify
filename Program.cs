@@ -99,9 +99,19 @@ namespace Pathify
                           .AllowAnyHeader();
                 });
             });
+            //builder.Services.AddCors(options =>
+            //{
+            //    options.AddPolicy("AllowReactApp",
+            //        policy =>
+            //        {
+            //            policy.WithOrigins("http://localhost:5173") // رابط مشروع الـ React بتاعك
+            //                  .AllowAnyHeader()
+            //                  .AllowAnyMethod();
+            //        });
+            //});
 
             //var app = builder.Build();
-           
+
             // بعد builder.Build() وقبل app.Run()
 
             builder.Logging.ClearProviders();
@@ -127,7 +137,9 @@ namespace Pathify
 
             app.UseHttpsRedirection();
 
+
             app.UseAuthentication();
+            app.UseCors("AllowReactApp");
 
             app.UseAuthorization();
              
